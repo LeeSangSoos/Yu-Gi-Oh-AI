@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: New Layer 1
+  - name: axis
     uniqueID: 3493296415
+    locked: 0
+  - name: card
+    uniqueID: 218332591
     locked: 0

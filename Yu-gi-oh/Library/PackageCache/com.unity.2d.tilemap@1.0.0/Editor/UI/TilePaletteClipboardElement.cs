@@ -27,6 +27,11 @@ namespace UnityEditor.Tilemaps
         private EditorWindow m_Window;
 
         /// <summary>
+        /// Callback when the active Brush does a Pick on the Clipboard.
+        /// </summary>
+        public event Action onBrushPicked;
+
+        /// <summary>
         /// Whether the clipboard is unlocked for editing.
         /// </summary>
         public bool clipboardUnlocked
@@ -111,7 +116,11 @@ namespace UnityEditor.Tilemaps
         private void OnClipboardGUI()
         {
             var clipboardRect = GUILayoutUtility.GetRect(layout.width, layout.height);
+            if (onBrushPicked != null && m_TilePaletteClipboard != null)
+                m_TilePaletteClipboard.onBrushPicked += onBrushPicked;
             m_TilePaletteClipboard.OnClipboardGUI(clipboardRect);
+            if (onBrushPicked != null && m_TilePaletteClipboard != null)
+                m_TilePaletteClipboard.onBrushPicked -= onBrushPicked;
         }
     }
 }
