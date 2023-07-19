@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63ce299db014f6b4996a6745e0d994eb, type: 3}
   m_Name: SilverFang
   m_EditorClassIdentifier: 
-  cardName: SilverFang
-  description: 
-  image: {fileID: 21300000, guid: 7e8ce8c8777b5a44d9a5d47faf9bfacf, type: 3}
+  cardimage: {fileID: 21300000, guid: 7e8ce8c8777b5a44d9a5d47faf9bfacf, type: 3}
   monstertype: 4
   attribute: 1
   level: 3

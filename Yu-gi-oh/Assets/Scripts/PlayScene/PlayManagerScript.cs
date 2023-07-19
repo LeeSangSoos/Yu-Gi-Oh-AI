@@ -1,56 +1,66 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayManagerScript : MonoBehaviour
 {
-	CardList mydeck;
-	CardList myextra;
-	CardList aideck;
-	CardList aiextra;
 	Page gamepage;
 	Turn turn;
+	int TotalTurn = 1;
+	public Player Ai;
+	public Player User;
+	Dictionary<Turn, Player> playermap = new Dictionary<Turn, Player>();
+	Player player;
+	Player enemy;
+	bool TurnStart = true;
 
-	CardList myhand;
-	CardList aihand;
 	private void Start()
 	{
 		//Set Decks
-		mydeck = JsonSaveLoad.LoadMyDeckData();
-		myextra = JsonSaveLoad.LoadMyExtraDeckData();
-		aideck = JsonSaveLoad.LoadAiDeckData();
-		aiextra = JsonSaveLoad.LoadAiExtraDeckData();
-		mydeck = Shuffle(mydeck);
-		aideck = Shuffle(aideck);
+		User.MainDeck = (JsonSaveLoad.LoadMyDeckData());
+		User.ExtraDeck = (JsonSaveLoad.LoadMyExtraDeckData());
+		Ai.MainDeck = (JsonSaveLoad.LoadAiDeckData());
+		Ai.ExtraDeck = (JsonSaveLoad.LoadAiExtraDeckData());
+		User.MainDeck = (Shuffle(User.MainDeck));
+		Ai.MainDeck = (Shuffle(Ai.MainDeck));
+
+		//Set Player AI and User
+		playermap[Turn.My] = User;
+		playermap[Turn.Ai] = Ai;
 
 		//Random Turn
-		turn = Random.Range(0, 1) == 0 ? Turn.Ai : Turn.My;
-
-		//Draw 5 cards from deck for each player
-		for(int i = 0; i < 5; i++)
-		{
-			myhand.Add(mydeck[i]);
-			aihand.Add(aideck[i]);
-			mydeck.RemoveAt(i);
-			aideck.RemoveAt(i);
-		}
+		turn = Random.Range(0, 2) == 0 ? Turn.Ai : Turn.My;
+		player = playermap[turn];
+		TurnColor.color = turn == Turn.My ? Constant.mycolor: Constant.aicolor;
 
 		gamepage = Page.Draw;
 	}
 
 	private void Update()
 	{
-		switch (gamepage)
+		if (TurnStart)
 		{
-			case Page.Draw: 
-				
-				break;
-			case Page.Standby: break;
-			case Page.Main1: break;
-			case Page.Battle: break;
-			case Page.Main2: break;
-			case Page.End: break;
+			switch (gamepage)
+			{
+				case Page.Draw:
+					DrawPageAction();
+					break;
+				case Page.Standby:
+
+					break;
+				case Page.Main1:
+
+					break;
+				case Page.Battle: break;
+				case Page.Main2: break;
+				case Page.End: break;
+			}
+			TurnStart = false;
 		}
+		//Check_effect(player);
+		//Check_effect(player.enemy);
+		//카드가 직접 이벤트 요청
+		//요청 타이밍이 맞으면 이벤트 UI ON
 	}
 
 	public CardList Shuffle(CardList list)
@@ -65,29 +75,115 @@ public class PlayManagerScript : MonoBehaviour
 		return list;
 	}
 
+	public Text PageText;
+	public Image TurnColor;
 	public void NextPage()
 	{
-		switch(gamepage)
+		switch (gamepage)
 		{
-			case Page.Draw: 
-				gamepage=Page.Standby;
+			case Page.Draw:
+				gamepage = Page.Standby;
 				break;
-			case Page.Standby: 
+			case Page.Standby:
 				gamepage = Page.Main1;
 				break;
-			case Page.Main1: 
-				gamepage=Page.Battle;
+			case Page.Main1:
+				if (TotalTurn == 1) gamepage = Page.End;
+				else gamepage = Page.Battle;
 				break;
 			case Page.Battle:
 				gamepage = Page.Main2;
 				break;
-			case Page.Main2: 
-				gamepage=Page.End;
+			case Page.Main2:
+				gamepage = Page.End;
 				break;
 			case Page.End:
 				turn = turn == Turn.My ? Turn.Ai : Turn.My;
+				player = playermap[turn];
+				enemy = player.Enemy;
+				TurnColor.color = turn == Turn.My ? Constant.mycolor : Constant.aicolor;
+				TotalTurn++;
 				gamepage = Page.Draw;
 				break;
 		}
+		PageText.text = gamepage.ToString();
+		TurnStart = true;
 	}
+	public void NextpageBtnAction()
+	{
+		if(turn== Turn.My)
+		{
+			NextPage();
+		}
+	}
+	private void DrawPageAction()
+	{
+
+		if (TotalTurn > 1)
+		{
+			player.draw();
+		}
+		else
+		{
+			//Draw 5 cards from deck for each player
+			for (int i = 0; i < 5; i++)
+			{
+				User.draw();
+				Ai.draw();
+			}
+		}
+	}
+
+	private void StandbyAction()
+	{
+
+	}
+
+	private void Main1Action()
+	{
+		/*player.normalsummon = true;
+		 *player.set = true;
+		 *player.normaleffect = true;
+		 *player.mainspecialsummon = true;
+		 */
+	}
+
+	private void BattleAction()
+	{
+		/* player.attack = true;
+		 * 
+		 */
+	}
+
+	private void Main2Action()
+	{
+		/*player.normalsummon = true;
+		 *player.set = true;
+		 *player.normaleffect = true;
+		 *player.mainspecialsummon = true;
+		 */
+	}
+
+	private void EndAction()
+	{
+		/*
+		 */
+	}
+
+	#region Info for Ai
+	public Turn GetTurn { 
+		get { return turn; } set { }
+	}
+
+	#endregion
+
+	#region Function for Ai
+	public void Ai_NextPage()
+	{
+		if(turn== Turn.Ai)
+		{
+			NextPage();
+		}
+	}
+	#endregion
 }

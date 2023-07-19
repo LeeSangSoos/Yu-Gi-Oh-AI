@@ -12,8 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423fc132b9a3a7747a541ba3b699d650, type: 3}
   m_Name: VioletCrystal
   m_EditorClassIdentifier: 
-  cardName: VioletCrystal
-  description: (This card is not treated as a "Crystal" card) Equip only to a Zombie
-    monster. It gains 300 ATK/DEF
-  image: {fileID: 21300000, guid: 1d5e9f39ad8119041ba866854a5de150, type: 3}
+  cardimage: {fileID: 21300000, guid: 1d5e9f39ad8119041ba866854a5de150, type: 3}
   magictype: 1

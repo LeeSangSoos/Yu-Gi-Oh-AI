@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63ce299db014f6b4996a6745e0d994eb, type: 3}
   m_Name: CurtainOfTheDarkOnes
   m_EditorClassIdentifier: 
-  cardName: CurtainOfTheDarkOnes
-  description: 
-  image: {fileID: 21300000, guid: ef83758150551224bbb34919d94f61a9, type: 3}
+  cardimage: {fileID: 21300000, guid: ef83758150551224bbb34919d94f61a9, type: 3}
   monstertype: 0
   attribute: 0
   level: 2

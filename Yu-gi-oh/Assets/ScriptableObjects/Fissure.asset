@@ -12,8 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423fc132b9a3a7747a541ba3b699d650, type: 3}
   m_Name: Fissure
   m_EditorClassIdentifier: 
-  cardName: Fissure
-  description: Destory the 1 face-up monster your opponent controls that has the
-    lowest ATK(your choice, if tied).
-  image: {fileID: 21300000, guid: 878cb74603302924da0989af07b93e76, type: 3}
+  cardimage: {fileID: 21300000, guid: 878cb74603302924da0989af07b93e76, type: 3}
   magictype: 0

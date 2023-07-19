@@ -34,7 +34,7 @@ public class CardListManager : MonoBehaviour
 
 		foreach(Card card in cardlist)
 		{
-			if (card.getname().Contains(s))
+			if (card.CardName.Contains(s))
 			{
 				makelist(card);
 			}
@@ -52,8 +52,8 @@ public class CardListManager : MonoBehaviour
 		GameObject cardGameObject = Instantiate(cardListPrefab, listParent);
 
 		EachCardList cardSetting = cardGameObject.GetComponent<EachCardList>();
-		cardSetting.image.sprite = card.getImage();
-		string cardname = Regex.Replace(card.getname(), @"(?<=\p{Ll})(\p{Lu})", " $1");
+		cardSetting.image.sprite = card.CardImage;
+		string cardname = Regex.Replace(card.CardName, @"(?<=\p{Ll})(\p{Lu})", " $1");
 		cardSetting.text.text = cardname;
 		cardSetting.Setdeckmanager(deckEditManager);
 		cardSetting.SetCardinfo(card);

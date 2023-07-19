@@ -5,10 +5,6 @@ public class GameManagerScript : MonoBehaviour
 {
 	public static GameManagerScript instance;
 	public static bool editmydeck;
-	public static int mydecksize;
-	public static int myextrasize;
-	public static int aidecksize;
-	public static int aiextrasize;
 	private static bool OnGameStart=true;
 	
 	private void Awake()
@@ -29,10 +25,7 @@ public class GameManagerScript : MonoBehaviour
 		
 		if (OnGameStart)
 		{
-			mydecksize = JsonSaveLoad.LoadMyDeckData().Count;
-			myextrasize= JsonSaveLoad.LoadMyExtraDeckData().Count;
-			aidecksize = JsonSaveLoad .LoadAiDeckData().Count;
-			aiextrasize = JsonSaveLoad.LoadAiExtraDeckData().Count;
+			
 		}
 		OnGameStart = false;
 		

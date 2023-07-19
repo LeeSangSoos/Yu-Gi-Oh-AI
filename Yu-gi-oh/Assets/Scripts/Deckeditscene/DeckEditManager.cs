@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,16 +18,23 @@ public class DeckEditManager : MonoBehaviour
 
 	private void Start()
 	{
-
-		if (GameManagerScript.editmydeck)
+		try
 		{
-			Decklist = JsonSaveLoad.LoadMyDeckData();
-			ExtraDecklist = JsonSaveLoad.LoadMyExtraDeckData();
+			if (GameManagerScript.editmydeck)
+			{
+				Decklist = JsonSaveLoad.LoadMyDeckData();
+				ExtraDecklist = JsonSaveLoad.LoadMyExtraDeckData();
+			}
+			else
+			{
+				Decklist = JsonSaveLoad.LoadAiDeckData();
+				ExtraDecklist = JsonSaveLoad.LoadAiExtraDeckData();
+			}
 		}
-		else
+		catch (FileNotFoundException ex)
 		{
-			Decklist = JsonSaveLoad.LoadAiDeckData();
-			ExtraDecklist = JsonSaveLoad.LoadAiExtraDeckData();
+			// Handle the file not found error
+			Debug.LogError("JSON file not found: " + ex.FileName);
 		}
 
 		if (Decklist != null)
@@ -35,7 +43,7 @@ public class DeckEditManager : MonoBehaviour
 			{
 				GameObject cardGameObject = Instantiate(DeckCardPrefab, DeckParent);
 				EachCardinDeck cardSetting = cardGameObject.GetComponent<EachCardinDeck>();
-				cardSetting.image.sprite = card.getImage();
+				cardSetting.image.sprite = card.CardImage;
 				cardSetting.SetCardinfo(card);
 				cardSetting.Setdeckmanager(this);
 				DeckSizetext.text = Decklist.Count.ToString();
@@ -49,7 +57,7 @@ public class DeckEditManager : MonoBehaviour
 		int count = 0;
 		foreach (Card c in Decklist)
 		{
-			if (c.getname() == card.getname())
+			if (c.CardName == card.CardName)
 			{
 				count++;
 			}
@@ -57,7 +65,7 @@ public class DeckEditManager : MonoBehaviour
 		if (count == 3) return;
 		GameObject cardGameObject = Instantiate(DeckCardPrefab, DeckParent);
 		EachCardinDeck cardSetting = cardGameObject.GetComponent<EachCardinDeck>();
-		cardSetting.image.sprite = card.getImage();
+		cardSetting.image.sprite = card.CardImage;
 		cardSetting.SetCardinfo(card);
 		cardSetting.Setdeckmanager(this);
 		Decklist.Add(card);
@@ -71,7 +79,7 @@ public class DeckEditManager : MonoBehaviour
 			GameObject cardGameObject = Instantiate(DeckCardPrefab, ExtraDeckParent);
 
 			EachCardList cardSetting = cardGameObject.GetComponent<EachCardList>();
-			cardSetting.image.sprite = card.getImage();
+			cardSetting.image.sprite = card.CardImage;
 		}
 	}
 
@@ -81,7 +89,7 @@ public class DeckEditManager : MonoBehaviour
 		cardobjects = DeckParent.GetComponentsInChildren<EachCardinDeck>();
 		foreach (EachCardinDeck child in cardobjects)
 		{
-			if (child.card.getname() == card.getname())
+			if (child.card.CardName == card.CardName)
 			{
 				child.transform.SetParent(null);
 
@@ -93,14 +101,7 @@ public class DeckEditManager : MonoBehaviour
 		DeckSizetext.text = Decklist.Count.ToString();
 	}
 
-	public void ToMenu()
-	{
-		GameManagerScript.mydecksize = JsonSaveLoad.LoadMyDeckData().Count;
-		GameManagerScript.myextrasize = JsonSaveLoad.LoadMyExtraDeckData().Count;
-		GameManagerScript.aidecksize = JsonSaveLoad.LoadAiDeckData().Count;
-		GameManagerScript.aiextrasize = JsonSaveLoad.LoadAiExtraDeckData().Count;
-		SceneManager.LoadScene("MenuScene");
-	}
+	public void ToMenu() => SceneManager.LoadScene("MenuScene");
 
 	public void SaveDeck()
 	{

@@ -62,12 +62,15 @@
     <Compile Include="Assets\Scripts\Deckeditscene\EachCardinDeck.cs" />
     <Compile Include="Assets\Scripts\A_Others\Enums.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\MonsterCard.cs" />
+    <Compile Include="Assets\Scripts\PlayScene\AiPlayer.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\TrapCard.cs" />
+    <Compile Include="Assets\Scripts\PlayScene\Player.cs" />
     <Compile Include="Assets\Scripts\Deckeditscene\CardListManager.cs" />
     <Compile Include="Assets\Scripts\PlayScene\PlayManagerScript.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\MagicCard.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\Card.cs" />
     <Compile Include="Assets\Scripts\GameManagerScript.cs" />
+    <Compile Include="Assets\Scripts\A_Others\Constant.cs" />
     <Compile Include="Assets\Scripts\Mainscene\MenuManager.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\CardList.cs" />
     <Compile Include="Assets\Scripts\Deckeditscene\EachCardList.cs" />

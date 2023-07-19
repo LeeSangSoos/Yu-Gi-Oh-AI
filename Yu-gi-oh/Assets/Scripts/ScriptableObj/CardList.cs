@@ -5,6 +5,8 @@ public class CardList : IEnumerable<Card>
 {
 	public List<Card> cards;
 
+	public CardList() { cards = new List<Card>(); }
+	public CardList(CardList cardlist) { cards = new List<Card>(cardlist.cards); }
 	public IEnumerator<Card> GetEnumerator()
 	{
 		return cards.GetEnumerator();
@@ -16,8 +18,7 @@ public class CardList : IEnumerable<Card>
 	}
 
 	public int Count { 
-	
-	get { return cards.Count; }
+		get { return cards.Count; }
 	}
 
 	public void Add(Card card)
@@ -40,4 +41,6 @@ public class CardList : IEnumerable<Card>
 	{
 		cards.RemoveAt(index);
 	}
+
+	public void Clear() { cards.Clear(); }
 }

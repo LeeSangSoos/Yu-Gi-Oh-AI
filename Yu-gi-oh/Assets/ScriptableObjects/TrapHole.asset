@@ -12,8 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3144937c655841444861c38dfc03b734, type: 3}
   m_Name: TrapHole
   m_EditorClassIdentifier: 
-  cardName: TrapHole
-  description: 'When your opponent Normal or Flip Summons a monster with 1000 or
-    more ATK: Target that monster; destroy that target.'
-  image: {fileID: 21300000, guid: 85fb29eaa519d5148a1eb4ffabfa41fa, type: 3}
+  cardimage: {fileID: 21300000, guid: 85fb29eaa519d5148a1eb4ffabfa41fa, type: 3}
   traptype: 0

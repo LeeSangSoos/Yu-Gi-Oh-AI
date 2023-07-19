@@ -1,16 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Card : ScriptableObject
 {
+	private string description; // 효과
+	[SerializeField]
+	private Sprite cardimage; //이미지
 
-	public string cardName; //이름
-	public string description; // 효과
-
-	public Sprite image; //이미지
-
-	public string getname() { return cardName; }
-	public string getDescription() { return description; }
-	public Sprite getImage() { return image; }
+	public string CardName
+	{
+		get { return name; }
+		set { }
+	}
+	public string Description
+	{
+		get { return description; }
+		set { }
+	}
+	public Sprite CardImage
+	{
+		get { return cardimage; }
+		set { }
+	}
 }

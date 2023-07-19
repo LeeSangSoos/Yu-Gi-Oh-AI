@@ -12,8 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423fc132b9a3a7747a541ba3b699d650, type: 3}
   m_Name: BeastFangs
   m_EditorClassIdentifier: 
-  cardName: BeastFangs
-  description: A Beast-Type monster equipped with this card increases its ATK and
-    DEF by 300 points
-  image: {fileID: 21300000, guid: 33e86e46ecc7c874796238e4e9b11486, type: 3}
+  cardimage: {fileID: 21300000, guid: 33e86e46ecc7c874796238e4e9b11486, type: 3}
   magictype: 0
