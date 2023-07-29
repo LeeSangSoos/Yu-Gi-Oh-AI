@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423fc132b9a3a7747a541ba3b699d650, type: 3}
   m_Name: LegendarySword
   m_EditorClassIdentifier: 
+  description: 
   cardimage: {fileID: 21300000, guid: 33899ccff6a24e14fa164aca365de178, type: 3}
   magictype: 1

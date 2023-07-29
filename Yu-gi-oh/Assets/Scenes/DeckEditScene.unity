@@ -301,7 +301,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: 0}
+  m_AnchoredPosition: {x: 10, y: 0.000042488184}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &369102045
@@ -1005,7 +1005,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DeckCardPrefab: {fileID: 3675324301562343754, guid: 9eecc25945a47cd429f164a1a4287513, type: 3}
+  Decklist:
+    cards: []
   DeckParent: {fileID: 1891917836}
+  ExtraDecklist:
+    cards: []
   ExtraDeckParent: {fileID: 369102044}
   cardobjects: []
   DeckSizetext: {fileID: 1611075165}
@@ -1107,7 +1111,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 525264326}
   m_HandleRect: {fileID: 525264325}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1314,6 +1318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6a379c0382b00e49b2071bc99dd05a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardData1: []
 --- !u!4 &1218134395
 Transform:
   m_ObjectHideFlags: 0
@@ -1553,7 +1558,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1351599775
@@ -2116,8 +2121,8 @@ Canvas:
   m_GameObject: {fileID: 1676010665}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 517585488}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2320,7 +2325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: 0}
+  m_AnchoredPosition: {x: 10, y: 0.000026555113}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1891917837
@@ -2871,24 +2876,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6624333528d6fde4db50a9dd10a98149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardlist:
-  - {fileID: 11400000, guid: b4073d53f5ceb8241915575c37d3f19d, type: 2}
-  - {fileID: 11400000, guid: b75de41184020ce4d9a71de0d04cfd63, type: 2}
-  - {fileID: 11400000, guid: e6ba35129d5ff1a4cb0e249a04c64abc, type: 2}
-  - {fileID: 11400000, guid: 10f8cc5f928eadc4ba327fcfbbc035bd, type: 2}
-  - {fileID: 11400000, guid: 14ce8bc462b27d3449507eeb5d5b6377, type: 2}
-  - {fileID: 11400000, guid: e4c4cba4528e5fb4ab015ad620c74b0d, type: 2}
-  - {fileID: 11400000, guid: 99db2ab4673e8ab44a73991de5e683a2, type: 2}
-  - {fileID: 11400000, guid: 31f9a6f62ae3ad04d8f34a2cc904cddf, type: 2}
-  - {fileID: 11400000, guid: c5048f805a7d25f4aa4d498283a8d726, type: 2}
-  - {fileID: 11400000, guid: 4a7ab1271b759ff4a886988f0555f95b, type: 2}
-  - {fileID: 11400000, guid: 7e81c149cc35d6044a0cb35162dca01a, type: 2}
-  - {fileID: 11400000, guid: b53f3acc6d9524e47b174efca87a59bd, type: 2}
-  - {fileID: 11400000, guid: 9ec9033dc64ca6e429c18515b6c3f8b2, type: 2}
-  - {fileID: 11400000, guid: 24dfda512482d0849a2afb1745a630a7, type: 2}
   cardListPrefab: {fileID: 92989953687599383, guid: daaa10bb660174d4096045c3a279cdcb, type: 3}
   listParent: {fileID: 1351599774}
   deckEditManager: {fileID: 955142087}
+  gameManagerScript: {fileID: 1218134394}
 --- !u!1 &2123874071
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Card", menuName = "MonsterCard")]
 public class MonsterCard : Card
 {
+	#region CardData
 	public enum MonsterCardType
 	{
 		Spellcaster, Warrior, Beast_Warrior, Dinosaur, Beast
@@ -28,5 +29,11 @@ public class MonsterCard : Card
 
 	public int atk; //공격력
 	public int def; //수비력
+	#endregion
+	#region CardEffect
+	[SerializeField]
+	private SummonMethod summonmMethod;
+	public SummonMethod SummonMethod { get { return summonmMethod; } }
+	#endregion
 
 }

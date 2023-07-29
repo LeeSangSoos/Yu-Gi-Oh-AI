@@ -11,8 +11,8 @@ public class PlayManagerScript : MonoBehaviour
 	public Player User;
 	Dictionary<Turn, Player> playermap = new Dictionary<Turn, Player>();
 	Player player;
-	Player enemy;
 	bool TurnStart = true;
+	public Text turntext;
 
 	private void Start()
 	{
@@ -32,6 +32,7 @@ public class PlayManagerScript : MonoBehaviour
 		turn = Random.Range(0, 2) == 0 ? Turn.Ai : Turn.My;
 		player = playermap[turn];
 		TurnColor.color = turn == Turn.My ? Constant.mycolor: Constant.aicolor;
+		turntext.text = "Turn: " + TotalTurn;
 
 		gamepage = Page.Draw;
 	}
@@ -100,12 +101,12 @@ public class PlayManagerScript : MonoBehaviour
 			case Page.End:
 				turn = turn == Turn.My ? Turn.Ai : Turn.My;
 				player = playermap[turn];
-				enemy = player.Enemy;
 				TurnColor.color = turn == Turn.My ? Constant.mycolor : Constant.aicolor;
 				TotalTurn++;
 				gamepage = Page.Draw;
 				break;
 		}
+		turntext.text = "Turn: " + TotalTurn;
 		PageText.text = gamepage.ToString();
 		TurnStart = true;
 	}

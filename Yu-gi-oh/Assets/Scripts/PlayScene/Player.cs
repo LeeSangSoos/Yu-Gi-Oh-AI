@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
 	#region values
+	//필드 정보
 	private CardList hand = new CardList();
 	private CardList maindeck = new CardList();
 	private CardList extradeck = new CardList();
@@ -12,12 +13,25 @@ public class Player : MonoBehaviour
 	private CardList monsterfield = new CardList();
 	private CardList magicfield = new CardList();
 	private Card fieldmagic;
+
+	//화면내 필요 요소
 	public Transform HandParent;
 	public GameObject HandPrefab;
-	public bool ai;
 	public Sprite backsideimage;
+	public bool ai;
+	public Card CardOnWork;
+
+	//유저 관련 화면 요소
+	#region 
+	public GameObject MonsterHandEventPanel;
+
+	#endregion
+
+	//적 & 작업가능
 	[SerializeField]
 	private Player enemy;
+	private bool isworking=false;
+
 	#endregion
 	#region Getter&Setter
 	public CardList Hand
@@ -134,6 +148,9 @@ public class Player : MonoBehaviour
 		else
 		{
 			cardobject.GetComponent<Image>().sprite = card.CardImage;
+			CardEvent cardevent = cardobject.GetComponent<CardEvent>();
+			cardevent.player = this;
+			cardevent.card = card;
 		}
 	}
 	public Card SubtractHand(Card card)
@@ -151,9 +168,63 @@ public class Player : MonoBehaviour
 			maindeck.RemoveAt(0);
 		}
 	}
+
+	#region monsterhandfunction
+	public Card activehandmonster;
+	public void Summon1_FromHand()
+	{
+		MonsterCard card = (MonsterCard)CardOnWork;
+		if (card.SummonMethod == SummonMethod.Normal)
+		{
+
+		}
+	}
+	public void Set()
+	{
+
+	}
+	public void Summon2()
+	{
+
+	}
+	public void Effect()
+	{
+
+	}
+	public void Detail()
+	{
+
+	}
+	public void Back()
+	{
+		MonsterHandEventPanel.SetActive(false);
+	}
+	public void OpenHandMonsterEvent(Card card)
+	{
+		if (IsFree())
+		{
+			CardOnWork = card;
+			MonsterHandEventPanel.SetActive(true);
+		}
+	}
+	#endregion
+	#endregion
+	#region GeneralFunctions
+	bool IsFree()
+	{
+		if (isworking)
+		{
+			return false;
+		}
+		return true;
+	}
 	#endregion
 
-
+	private void Start()
+	{
+		if(!ai)
+			MonsterHandEventPanel.SetActive(false);
+	}
 	private void Update()
 	{
 

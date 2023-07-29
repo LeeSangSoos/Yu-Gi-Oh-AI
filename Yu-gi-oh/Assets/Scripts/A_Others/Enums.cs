@@ -9,9 +9,30 @@ public enum Page
 	Main2,
 	End
 }
-
 public enum Turn
 {
 	Ai,
 	My
+}
+public enum CardPosition
+{
+	Hand,
+	MainDeck,
+	ExtraDeck,
+	Grave,
+	Exiled,
+	MonsterField,
+	MagicField,
+	FieldMagic
+}
+public enum SummonMethod
+{
+	Normal,
+	Special,
+	Ritual,
+	Fusion,
+	Synchro,
+	XYZ,
+	Pendulum,
+	Link
 }

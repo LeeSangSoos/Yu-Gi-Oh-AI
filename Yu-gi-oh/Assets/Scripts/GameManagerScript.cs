@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -6,6 +7,15 @@ public class GameManagerScript : MonoBehaviour
 	public static GameManagerScript instance;
 	public static bool editmydeck;
 	private static bool OnGameStart=true;
+
+	[SerializeField]
+	private List<Card> CardData1;
+	private static List<Card> CardData2 = new List<Card>();
+	public static List<Card> CardList{
+		get { return CardData2; }
+	}
+
+	private bool isuser;
 	
 	private void Awake()
 	{
@@ -18,16 +28,19 @@ public class GameManagerScript : MonoBehaviour
 		MakeJsonFiles();
 		instance = this;
 		DontDestroyOnLoad(gameObject);
+
+		if (OnGameStart)
+		{
+			foreach (Card card in CardData1)
+			{
+				CardData2.Add(card);
+			}
+		}
+		OnGameStart = false;
 	}
 
 	private void Start()
 	{
-		
-		if (OnGameStart)
-		{
-			
-		}
-		OnGameStart = false;
 		
 	}
 
@@ -39,8 +52,8 @@ public class GameManagerScript : MonoBehaviour
 		string myExtraDeckFilePath = Path.Combine(Application.persistentDataPath, "MyExtraDeckData.json");
 		string aiDeckFilePath = Path.Combine(Application.persistentDataPath, "AiDeckData.json");
 		string aiExtraDeckFilePath = Path.Combine(Application.persistentDataPath, "AiExtraDeckData.json");
-		CardList Deck = new CardList();
-		string json = JsonUtility.ToJson(Deck);
+		List<string> DeckData = new List<string>();
+		string json = JsonUtility.ToJson(DeckData);
 
 		if (!File.Exists(myDeckFilePath))
 		{
@@ -58,8 +71,15 @@ public class GameManagerScript : MonoBehaviour
 		{
 			File.WriteAllText(aiExtraDeckFilePath, json);
 		}
-
 		
 	}
+	public void setisuser(bool setting)
+	{
+		isuser = setting;
+	}
 
+	public bool IsUser()
+	{
+		return isuser;
+	}
 }

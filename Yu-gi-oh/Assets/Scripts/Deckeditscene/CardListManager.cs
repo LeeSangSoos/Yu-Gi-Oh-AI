@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class CardListManager : MonoBehaviour
 {
-	public List<Card> cardlist;
 	public GameObject cardListPrefab;
 	public Transform listParent;
 	public DeckEditManager deckEditManager;
+	public GameManagerScript gameManagerScript;
+	private List<Card> cardlist;
+
 	private void Start()
 	{
+		cardlist = GameManagerScript.CardList;
 		foreach (Card card in cardlist)
 		{
 			makelist(card);

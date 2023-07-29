@@ -8,6 +8,8 @@ public class MenuManager : MonoBehaviour
 	public GameManagerScript gamemanager;
 	public Text decksizenotice;
 	int mydecksize, myextrasize, aidecksize, aiextrasize;
+	bool isuser = true;
+	public Text UserOrAiText;
 
 	private void Start()
 	{
@@ -33,12 +35,25 @@ public class MenuManager : MonoBehaviour
 		SceneManager.LoadScene("DeckEditScene");
 		GameManagerScript.editmydeck = false;
 	}
-
+	public void UserOrAi()
+	{
+		if (isuser)
+		{
+			UserOrAiText.text = "Player: Ai";
+			isuser = false;
+		}
+		else {
+			UserOrAiText.text = "Player: User";
+			isuser = true;
+		}
+		Debug.Log(isuser);
+	}
 	public void StartPlay()
 	{
 		if (mydecksize >= 40 && mydecksize <= 60 && myextrasize <=15 &&
 			aidecksize >= 40 && aidecksize <= 60 && aiextrasize <= 15)
 		{
+			gamemanager.setisuser(isuser);
 			SceneManager.LoadScene("PlayScene");
 		}
 	}
