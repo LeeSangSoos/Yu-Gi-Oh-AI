@@ -22,13 +22,13 @@ public class MonsterCard : Card
 		Normal, Effect
 	}
 
-	public MonsterCardType monstertype; // 종족
-	public Attribute attribute; // 속성
-	public int level; //레벨, 랭크, 링크
-	public List<Archetype> archetype; // 효과, 융합, 펜듈럼, 스피릿 등
+	public MonsterCardType monstertype; // race
+	public Attribute attribute; // element
+	public int level; //level, rank, link
+	public List<Archetype> archetype; // effect, fusion ...
 
-	public int atk; //공격력
-	public int def; //수비력
+	public int atk; 
+	public int def; 
 	#endregion
 	#region CardEffect
 	[SerializeField]

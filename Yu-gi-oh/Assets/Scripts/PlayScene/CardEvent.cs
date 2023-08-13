@@ -5,15 +5,14 @@ public class CardEvent : MonoBehaviour, IPointerClickHandler
 {
 	public Player player;
 	public Card card;
+	public PlayerType playertype;
+
 	public void OnPointerClick(PointerEventData eventData)
 	{
-		if(card is MonsterCard && card.pos==CardPosition.Hand)
+		if (playertype == PlayerType.Ai) return;
+		if (card.pos == CardPosition.Hand)
 		{
-			player.OpenHandMonsterEvent(card);
-		}
-		else
-		{
-
+			player.UserAction(card);
 		}
 	}
 }

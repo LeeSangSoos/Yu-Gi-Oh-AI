@@ -46,7 +46,6 @@ public class MenuManager : MonoBehaviour
 			UserOrAiText.text = "Player: User";
 			isuser = true;
 		}
-		Debug.Log(isuser);
 	}
 	public void StartPlay()
 	{

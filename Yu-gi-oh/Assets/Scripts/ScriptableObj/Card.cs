@@ -4,9 +4,9 @@ public class Card : ScriptableObject
 {
 	#region cardinfo
 	[SerializeField]
-	private string description; // 효과
+	private string description;
 	[SerializeField]
-	private Sprite cardimage; //이미지
+	private Sprite cardimage;
 
 	public string Description
 	{
@@ -25,9 +25,22 @@ public class Card : ScriptableObject
 	
 
 	#endregion
-	#region cardpublicdata
-	public CardPosition pos; //카드 현재 위치
+	#region Card Public Data
+	public CardPosition pos; //Card position on field
+	public Player owner; //Card possesion
+	private Player originowner; //Card original owner
+	public void SetOriginOwner(Player player) { originowner = player; }
+	public Player GetOriginOwner() {  return originowner; }
+	private int cardnum; //Card identification number
+	public void SetCardNum(int n)
+	{
+		cardnum = n;
+	}
+	public int GetCardNum() {  return cardnum; }
+	private GameObject cardobject;
+	public void SetCardObject(GameObject cardo) { cardobject = cardo; }
+	public GameObject CardObejct { get { return cardobject; } }
 
 	#endregion
-	
+
 }

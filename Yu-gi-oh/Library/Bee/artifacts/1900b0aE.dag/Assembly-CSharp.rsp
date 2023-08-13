@@ -395,7 +395,6 @@
 "Assets/Scripts/PlayScene/CardEvent.cs"
 "Assets/Scripts/PlayScene/Player.cs"
 "Assets/Scripts/PlayScene/PlayManagerScript.cs"
-"Assets/Scripts/PlayScene/Temp.cs"
 "Assets/Scripts/PlayScene/User.cs"
 "Assets/Scripts/ScriptableObj/Card.cs"
 "Assets/Scripts/ScriptableObj/CardList.cs"
