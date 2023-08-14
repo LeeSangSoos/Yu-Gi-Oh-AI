@@ -1,36 +1,56 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
 	#region values
-	//필드 정보
+	//Field, turn info
 	private CardList hand = new CardList();
 	private CardList maindeck = new CardList();
 	private CardList extradeck = new CardList();
 	private CardList grave = new CardList();
 	private CardList exiled = new CardList();
-	private CardList monsterfield = new CardList();
-	private CardList magicfield = new CardList();
+	private CardList monsterfield = new CardList(5);
+	private CardList magicfield = new CardList(5);
+	private Card linkleftfield;
+	private CardList linkrightfield;
 	private Card fieldmagic;
+	public PlayManagerScript playmanager;
+	public bool myturn = false;
 
-	//화면내 필요 요소
-	public Transform HandParent;
-	public GameObject HandPrefab;
-	public Sprite backsideimage;
-	public bool ai;
+	//enemy & work available
+	public Player enemy;
+	private bool isworking = false;
+
+	//card action in game
 	public Card CardOnWork;
+	private bool workleft = true;
+	public bool WorkLeft
+	{
+		get { return workleft; }
+	}
 
-	//유저 관련 화면 요소
-	#region 
-	public GameObject MonsterHandEventPanel;
+	//is this user or ai
+	[SerializeField] private bool is12;
+	private bool isuser;
+	[SerializeField] private User userscript;
+	[SerializeField] private AiPlayer aiscript;
 
-	#endregion
+	//UI
+	public Transform HandParent;
+	public Sprite backsideimage;
+	public List<Transform> MonsterZone;
+	public List<Transform> MagicZone;
 
-	//적 & 작업가능
-	[SerializeField]
-	private Player enemy;
-	private bool isworking=false;
+	//Turn action
+	private int turndraw;
+	private int turnsummon;
+	private int turnpendulum;
+	private int turndrawlimit=1;
+	private int turnsummonlimit=1;
+	private int turnpendulumlimit=1;
 
 	#endregion
 	#region Getter&Setter
@@ -133,28 +153,38 @@ public class Player : MonoBehaviour
 			fieldmagic = value;
 		}
 	}
-	public Player Enemy { get { return enemy; } }
+	public void setPlayerType(PlayerType p)
+	{
+		if (p == PlayerType.User)
+		{
+			isuser=true;
+		}
+		else
+		{
+			isuser=false;
+		}
+	}
+	public PlayerType GetPlayerType() { return isuser ? PlayerType.User : PlayerType.Ai; }
 	#endregion
 	#region hand functions
 	public void AddHand(Card card)
 	{
 		hand.Add(card);
-		GameObject cardobject = Instantiate(HandPrefab, HandParent);
-		cardobject.name = card.CardName;
-		if (ai)
+		card.CardObejct.transform.SetParent(HandParent, false);
+		card.CardObejct.SetActive(true);
+		if (is12)
 		{
-			cardobject.GetComponent<Image>().sprite = backsideimage;
+			card.CardObejct.GetComponent<Image>().sprite = backsideimage;
 		}
 		else
 		{
-			cardobject.GetComponent<Image>().sprite = card.CardImage;
-			CardEvent cardevent = cardobject.GetComponent<CardEvent>();
-			cardevent.player = this;
-			cardevent.card = card;
+			card.CardObejct.GetComponent<Image>().sprite = card.CardImage;
 		}
+		card.pos = CardPosition.Hand;
 	}
 	public Card SubtractHand(Card card)
 	{
+		Card result = hand.Find(c => card.GetCardNum() == c.GetCardNum());
 		hand.Remove(card);
 		Destroy(HandParent.Find(card.CardName).gameObject);
 		return card;
@@ -166,11 +196,28 @@ public class Player : MonoBehaviour
 		{
 			AddHand(maindeck[0]);
 			maindeck.RemoveAt(0);
+
+		}
+	}
+	public void RemoveMonsterFromField(int pos)
+	{
+		if (pos >= 0 && pos < monsterfield.Count)
+		{
+			monsterfield[pos] = null;
+			MonsterZone[pos].GetComponent<Image>().sprite = backsideimage;
+			MonsterZone[pos].eulerAngles = new Vector3(0, 0, 0);
 		}
 	}
 
+	public void NormalSummon(Card card, int pos)
+	{
+		if (monsterfield[pos] != null) return;
+		Card targetcard = SubtractHand(card);
+		monsterfield[pos] = targetcard;
+		MonsterZone[pos].GetComponent<Image>().sprite = targetcard.CardImage;
+	}
+
 	#region monsterhandfunction
-	public Card activehandmonster;
 	public void Summon1_FromHand()
 	{
 		MonsterCard card = (MonsterCard)CardOnWork;
@@ -191,42 +238,115 @@ public class Player : MonoBehaviour
 	{
 
 	}
-	public void Detail()
-	{
-
-	}
-	public void Back()
-	{
-		MonsterHandEventPanel.SetActive(false);
-	}
-	public void OpenHandMonsterEvent(Card card)
-	{
-		if (IsFree())
-		{
-			CardOnWork = card;
-			MonsterHandEventPanel.SetActive(true);
-		}
-	}
 	#endregion
 	#endregion
 	#region GeneralFunctions
-	bool IsFree()
+
+	/*void AbleToWork()
 	{
 		if (isworking)
 		{
-			return false;
+			Debug.Log("Waiting for work to be done");
+			while (isworking)
+			{
+				
+			}
+			isworking = true;
+			Debug.Log("Work done");
 		}
-		return true;
+	}*/
+	public void UserAction(Card card)
+	{
+		userscript.CardClickEvent(card);
 	}
 	#endregion
-
-	private void Start()
-	{
-		if(!ai)
-			MonsterHandEventPanel.SetActive(false);
-	}
+	#region TimeFunctions
 	private void Update()
 	{
+		switch (playmanager.GetPage())
+		{
+			case Page.Draw:
+				DrawPageWork();
+				break;
+			case Page.Standby:
+				StandbyPageWork();
+				break;
+			case Page.Main1:
+				Main1PageWork();
+				break;
+			case Page.Battle:
+				BattlePageWork();
+				break;
+			case Page.Main2: 
+				Main2PageWork();
+				break;
+			case Page.End:
+				EndPageWork();
+				break;
+		}
+	}
+	#endregion
+	#region Check for work
+	//Function for checking the effect of card
+	//Function for checking the work to do
+	public void SetTurnActions()
+	{
+		turndraw = turndrawlimit;
+		turnsummon = turnsummonlimit;
+		turnpendulum = turnpendulumlimit;
+	}
+	void DrawPageWork()
+	{
+		switch (playmanager.GetPageTime())
+		{
+			case PageTime.Start:
+				if (myturn)
+				{
+					while (turndraw>=1)
+					{
+						draw();
+						turndraw--;
+					}
+				}
+				workleft = false;
+				break;
+			case PageTime.OnGoing:
+				workleft = false;
+				break;
+			case PageTime.End:
+				workleft = false;
+				break;
+		}
+	}
+	void StandbyPageWork()
+	{
 
 	}
+	void Main1PageWork()
+	{
+		switch(playmanager.GetPageTime())
+		{
+			case PageTime.Start:
+				workleft = false;
+				break;
+			case PageTime.OnGoing:
+				workleft = true;
+				break;
+			case PageTime.End:
+				break;
+		}
+	}
+	void BattlePageWork()
+	{
+
+	}
+	void Main2PageWork()
+	{
+
+	}
+	void EndPageWork()
+	{
+
+	}
+	#endregion
 }

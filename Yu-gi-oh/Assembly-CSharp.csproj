@@ -62,7 +62,6 @@
     <Compile Include="Assets\Scripts\Deckeditscene\EachCardinDeck.cs" />
     <Compile Include="Assets\Scripts\A_Others\Enums.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\MonsterCard.cs" />
-    <Compile Include="Assets\Scripts\PlayScene\Temp.cs" />
     <Compile Include="Assets\Scripts\PlayScene\AiPlayer.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\TrapCard.cs" />
     <Compile Include="Assets\Scripts\PlayScene\Player.cs" />

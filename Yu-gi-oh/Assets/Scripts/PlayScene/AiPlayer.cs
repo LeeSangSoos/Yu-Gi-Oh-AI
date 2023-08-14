@@ -3,6 +3,7 @@ using UnityEngine;
 public class AiPlayer : MonoBehaviour
 {
 	public PlayManagerScript game;
+	public Player player;
 
 	void Start()
 	{

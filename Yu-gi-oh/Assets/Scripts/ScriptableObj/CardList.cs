@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -7,6 +8,7 @@ public class CardList : IEnumerable<Card>
 	public List<Card> cards;
 
 	public CardList() { cards = new List<Card>(); }
+	public CardList(int n) { cards = new List<Card>(n); for (int i = 0; i < n; i++)	cards.Add(null);	}
 	public CardList(CardList cardlist) { cards = new List<Card>(cardlist.cards); }
 	public IEnumerator<Card> GetEnumerator()
 	{
@@ -78,6 +80,9 @@ public class CardList : IEnumerable<Card>
 	{
 		cards.RemoveAt(index);
 	}
-
+	public Card Find(Predicate<Card> match)
+	{
+		return cards.Find(match);
+	}
 	public void Clear() { cards.Clear(); }
 }

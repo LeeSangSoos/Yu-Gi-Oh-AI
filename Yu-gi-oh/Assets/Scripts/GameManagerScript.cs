@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -19,14 +20,17 @@ public class GameManagerScript : MonoBehaviour
 	
 	private void Awake()
 	{
-		if (instance != null)
+		if (instance != null && instance != this)
 		{
-			Destroy(gameObject);
-			return;
+			Destroy(this.gameObject);  // Destroy the new instance
+			return;                    // Exit the Awake method
 		}
-		
+		else if (instance == null)
+		{
+			instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
 		MakeJsonFiles();
-		instance = this;
 		DontDestroyOnLoad(gameObject);
 
 		if (OnGameStart)
@@ -78,8 +82,8 @@ public class GameManagerScript : MonoBehaviour
 		isuser = setting;
 	}
 
-	public bool IsUser()
+	public bool IsUser
 	{
-		return isuser;
+		get{ return isuser; } 
 	}
 }

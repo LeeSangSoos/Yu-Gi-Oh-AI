@@ -1,5 +1,4 @@
 
-
 public enum Page
 {
 	Draw,
@@ -35,4 +34,15 @@ public enum SummonMethod
 	XYZ,
 	Pendulum,
 	Link
+}
+public enum PageTime
+{
+	Start,
+	OnGoing,
+	End
+}
+public enum PlayerType
+{
+	User,
+	Ai
 }

@@ -7,11 +7,12 @@ public class CardListManager : MonoBehaviour
 	public GameObject cardListPrefab;
 	public Transform listParent;
 	public DeckEditManager deckEditManager;
-	public GameManagerScript gameManagerScript;
+	private GameManagerScript gameManagerScript;
 	private List<Card> cardlist;
 
 	private void Start()
 	{
+		gameManagerScript = Object.FindFirstObjectByType<GameManagerScript>();
 		cardlist = GameManagerScript.CardList;
 		foreach (Card card in cardlist)
 		{
