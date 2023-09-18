@@ -1,7 +1,9 @@
+using NUnit.Framework;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class MenuManager : MonoBehaviour
 {
@@ -73,7 +75,7 @@ public class MenuManager : MonoBehaviour
 			Debug.Log(path + " file is Deleted");
 			if (!File.Exists(path))
 			{
-				CardList Deck = new CardList();
+				List<Card> Deck = new List<Card>();
 				string json = JsonUtility.ToJson(Deck);
 				File.WriteAllText(path, json);
 				Debug.Log(path + " file is Reseted");

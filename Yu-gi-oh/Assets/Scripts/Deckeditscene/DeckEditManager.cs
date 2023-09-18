@@ -2,15 +2,16 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class DeckEditManager : MonoBehaviour
 {
 	public GameObject DeckCardPrefab;
 
-	public CardList Decklist;
+	public List<Card> Decklist;
 	public Transform DeckParent;
 
-	public CardList ExtraDecklist;
+	public List<Card> ExtraDecklist;
 	public Transform ExtraDeckParent;
 
 	public EachCardinDeck[] cardobjects;

@@ -58,24 +58,34 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2023.1.1f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\MagicCards\VioletCrystal.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\JsonSaveLoad.cs" />
     <Compile Include="Assets\Scripts\Deckeditscene\EachCardinDeck.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\MagicCards\PowerOfKaishin.cs" />
     <Compile Include="Assets\Scripts\A_Others\Enums.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\MonsterCard.cs" />
     <Compile Include="Assets\Scripts\PlayScene\AiPlayer.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\TrapCard.cs" />
     <Compile Include="Assets\Scripts\PlayScene\Player.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\IEffect.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\MagicCards\BeastFangs.cs" />
     <Compile Include="Assets\Scripts\Deckeditscene\CardListManager.cs" />
     <Compile Include="Assets\Scripts\PlayScene\PlayManagerScript.cs" />
     <Compile Include="Assets\Scripts\PlayScene\User.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\MagicCard.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\Card.cs" />
     <Compile Include="Assets\Scripts\GameManagerScript.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\MagicCards\LegendarySword.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\MagicCards\BookOfSecretArts.cs" />
     <Compile Include="Assets\Scripts\A_Others\Constant.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\CardEffectMapping.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\MagicCards\Fissure.cs" />
     <Compile Include="Assets\Scripts\Mainscene\MenuManager.cs" />
-    <Compile Include="Assets\Scripts\ScriptableObj\CardList.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\MagicCards\DarkHole.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\DefaultEffect.cs" />
     <Compile Include="Assets\Scripts\ScriptableObj\Json_Deckclass.cs" />
     <Compile Include="Assets\Scripts\Deckeditscene\EachCardList.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObj\CardClasses\TrapCards\TrapHole.cs" />
     <Compile Include="Assets\Scripts\PlayScene\CardEvent.cs" />
     <Compile Include="Assets\Scripts\Deckeditscene\DeckEditManager.cs" />
   </ItemGroup>

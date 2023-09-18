@@ -14,4 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: 
   cardimage: {fileID: 21300000, guid: 826e59ba7e5463943b3304ef1ec4cd92, type: 3}
+  iscardfaceup: 0
+  playManager: {fileID: 0}
+  trigger: 0
+  targetcard: {fileID: 0}
+  pos: 0
+  owner: {fileID: 0}
+  setturn: -1
+  ieffect: {fileID: 11400000, guid: da2248e68b66ffa45a97a5150a4bd9a1, type: 2}
   magictype: 0

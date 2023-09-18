@@ -1,23 +1,25 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
 	public static GameManagerScript instance;
 	public static bool editmydeck;
-	private static bool OnGameStart=true;
+	private static bool OnGameStart = true;
 
 	[SerializeField]
 	private List<Card> CardData1;
 	private static List<Card> CardData2 = new List<Card>();
-	public static List<Card> CardList{
+	public static List<Card> ALLCardList
+	{
 		get { return CardData2; }
 	}
+	private List<IEffect> effects = new List<IEffect>();
+	public List<IEffect> IEffects { get { return effects; } }
 
 	private bool isuser;
-	
+
 	private void Awake()
 	{
 		if (instance != null && instance != this)
@@ -29,6 +31,7 @@ public class GameManagerScript : MonoBehaviour
 		{
 			instance = this;
 			DontDestroyOnLoad(gameObject);
+			Application.targetFrameRate = 60;
 		}
 		MakeJsonFiles();
 		DontDestroyOnLoad(gameObject);
@@ -42,12 +45,6 @@ public class GameManagerScript : MonoBehaviour
 		}
 		OnGameStart = false;
 	}
-
-	private void Start()
-	{
-		
-	}
-
 
 	// Check and make json files
 	private void MakeJsonFiles()
@@ -75,7 +72,7 @@ public class GameManagerScript : MonoBehaviour
 		{
 			File.WriteAllText(aiExtraDeckFilePath, json);
 		}
-		
+
 	}
 	public void setisuser(bool setting)
 	{
@@ -84,6 +81,6 @@ public class GameManagerScript : MonoBehaviour
 
 	public bool IsUser
 	{
-		get{ return isuser; } 
+		get { return isuser; }
 	}
 }

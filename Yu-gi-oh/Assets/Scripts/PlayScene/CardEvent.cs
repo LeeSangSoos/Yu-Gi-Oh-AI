@@ -10,9 +10,7 @@ public class CardEvent : MonoBehaviour, IPointerClickHandler
 	public void OnPointerClick(PointerEventData eventData)
 	{
 		if (playertype == PlayerType.Ai) return;
-		if (card.pos == CardPosition.Hand)
-		{
-			player.UserAction(card);
-		}
+		if(player.UserScript.whatwork != WhatWork.ChainEffect && !player.myturn) return;
+		player.UserAction(card);
 	}
 }

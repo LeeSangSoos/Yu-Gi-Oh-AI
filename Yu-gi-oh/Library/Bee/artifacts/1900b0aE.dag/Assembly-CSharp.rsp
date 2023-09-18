@@ -397,7 +397,6 @@
 "Assets/Scripts/PlayScene/PlayManagerScript.cs"
 "Assets/Scripts/PlayScene/User.cs"
 "Assets/Scripts/ScriptableObj/Card.cs"
-"Assets/Scripts/ScriptableObj/CardList.cs"
 "Assets/Scripts/ScriptableObj/JsonSaveLoad.cs"
 "Assets/Scripts/ScriptableObj/Json_Deckclass.cs"
 "Assets/Scripts/ScriptableObj/MagicCard.cs"

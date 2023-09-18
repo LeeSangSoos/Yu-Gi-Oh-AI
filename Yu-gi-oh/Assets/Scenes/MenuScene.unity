@@ -191,7 +191,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Deck Edit
+  m_Text: 6 Deck Edit
 --- !u!222 &70962384
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1079,7 +1079,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Ai Deck Edit
+  m_Text: 12 Deck Edit
 --- !u!222 &1564690560
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1431,7 +1431,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 150}
+  m_AnchoredPosition: {x: 0, y: 300}
   m_SizeDelta: {x: 300, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1854982629
@@ -1565,7 +1565,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 300}
+  m_AnchoredPosition: {x: 0, y: 150}
   m_SizeDelta: {x: 300, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1868505599
@@ -1719,5 +1719,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4a7ab1271b759ff4a886988f0555f95b, type: 2}
   - {fileID: 11400000, guid: 7e81c149cc35d6044a0cb35162dca01a, type: 2}
   - {fileID: 11400000, guid: b53f3acc6d9524e47b174efca87a59bd, type: 2}
-  - {fileID: 11400000, guid: 9ec9033dc64ca6e429c18515b6c3f8b2, type: 2}
+  - {fileID: 11400000, guid: ec108f409ad89ea4bad829b812cb07a2, type: 2}
   - {fileID: 11400000, guid: 24dfda512482d0849a2afb1745a630a7, type: 2}

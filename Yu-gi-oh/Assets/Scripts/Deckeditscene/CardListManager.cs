@@ -13,7 +13,7 @@ public class CardListManager : MonoBehaviour
 	private void Start()
 	{
 		gameManagerScript = Object.FindFirstObjectByType<GameManagerScript>();
-		cardlist = GameManagerScript.CardList;
+		cardlist = GameManagerScript.ALLCardList;
 		foreach (Card card in cardlist)
 		{
 			makelist(card);

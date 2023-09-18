@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public static class JsonSaveLoad
 {
-	public static void SaveMyDeckData(CardList Deck, CardList ExtraDeck)
+	public static void SaveMyDeckData(List<Card> Deck, List<Card> ExtraDeck)
 	{
 		Json_Deckclass deckdata = new Json_Deckclass();
 		foreach (Card card in Deck)
@@ -25,7 +25,7 @@ public static class JsonSaveLoad
 		filePath = Path.Combine(Application.persistentDataPath, "MyExtraDeckData.json");
 		File.WriteAllText(filePath, json);
 	}
-	public static CardList LoadMyDeckData()
+	public static List<Card> LoadMyDeckData()
 	{
 		//json에서 덱 카드들의 이름 읽어오기
 		string filePath = Path.Combine(Application.persistentDataPath, "MyDeckData.json");
@@ -33,30 +33,34 @@ public static class JsonSaveLoad
 		Json_Deckclass deckdata = JsonUtility.FromJson<Json_Deckclass>(json);
 
 		//GameManager의 카드 리스트에서 카드명에 따른 카드들 로드
-		CardList Deck = new CardList();
+		List<Card> Deck = new List<Card>();
 		foreach (string cardname in deckdata.deck)
 		{
-			Card card = GameManagerScript.CardList.Find(match => match.CardName == cardname);
-			Deck.Add(card);
+			Card originalCard = GameManagerScript.ALLCardList.Find(match => match.CardName == cardname);
+			Card copiedCard = CreateCardInstance(originalCard);
+			copiedCard.CopyProperties(originalCard);
+			Deck.Add(copiedCard);
 		}
 		return Deck;
 	}
-	public static CardList LoadMyExtraDeckData()
+	public static List<Card> LoadMyExtraDeckData()
 	{
 		string filePath = Path.Combine(Application.persistentDataPath, "MyExtraDeckData.json");
 		string json = File.ReadAllText(filePath);
 		Json_Deckclass ExtraDeckData = JsonUtility.FromJson<Json_Deckclass>(json);
 
-		CardList ExtraDeck = new CardList();
+		List<Card> ExtraDeck = new List<Card>();
 		foreach (string cardname in ExtraDeckData.deck)
 		{
-			Card card = GameManagerScript.CardList.Find(match => match.CardName == cardname);
-			ExtraDeck.Add(card);
+			Card originalCard = GameManagerScript.ALLCardList.Find(match => match.CardName == cardname);
+			Card copiedCard = CreateCardInstance(originalCard);
+			copiedCard.CopyProperties(originalCard);
+			ExtraDeck.Add(copiedCard);
 		}
 
 		return ExtraDeck;
 	}
-	public static void SaveAiDeckData(CardList Deck, CardList ExtraDeck)
+	public static void SaveAiDeckData(List<Card> Deck, List<Card> ExtraDeck)
 	{
 		Json_Deckclass deckdata = new Json_Deckclass();
 		foreach (Card card in Deck)
@@ -76,33 +80,54 @@ public static class JsonSaveLoad
 		filePath = Path.Combine(Application.persistentDataPath, "AiExtraDeckData.json");
 		File.WriteAllText(filePath, json);
 	}
-	public static CardList LoadAiDeckData()
+	public static List<Card> LoadAiDeckData()
 	{
 		string filePath = Path.Combine(Application.persistentDataPath, "AiDeckData.json");
 		string json = File.ReadAllText(filePath);
 		Json_Deckclass deckdata = JsonUtility.FromJson<Json_Deckclass>(json);
 
-		CardList Deck = new CardList();
+		List<Card> Deck = new List<Card>();
 		foreach (string cardname in deckdata.deck)
 		{
-			Card card = GameManagerScript.CardList.Find(match => match.CardName == cardname);
-			Deck.Add(card);
+			Card originalCard = GameManagerScript.ALLCardList.Find(match => match.CardName == cardname);
+			Card copiedCard = CreateCardInstance(originalCard);
+			copiedCard.CopyProperties(originalCard);
+			Deck.Add(copiedCard);
 		}
 		return Deck;
 	}
-	public static CardList LoadAiExtraDeckData()
+	public static List<Card> LoadAiExtraDeckData()
 	{
 		string filePath = Path.Combine(Application.persistentDataPath, "AiExtraDeckData.json");
 		string json = File.ReadAllText(filePath);
 		Json_Deckclass ExtraDeckData = JsonUtility.FromJson<Json_Deckclass>(json);
 
-		CardList ExtraDeck = new CardList();
+		List<Card> ExtraDeck = new List<Card>();
 		foreach (string cardname in ExtraDeckData.deck)
 		{
-			Card card = GameManagerScript.CardList.Find(match => match.CardName == cardname);
-			ExtraDeck.Add(card);
+			Card originalCard = GameManagerScript.ALLCardList.Find(match => match.CardName == cardname);
+			Card copiedCard = CreateCardInstance(originalCard);
+			copiedCard.CopyProperties(originalCard);
+			ExtraDeck.Add(copiedCard);
 		}
 
 		return ExtraDeck;
+	}
+
+	public static Card CreateCardInstance(Card originalCard)
+	{
+		if (originalCard is MonsterCard)
+		{
+			return ScriptableObject.CreateInstance<MonsterCard>();
+		}
+		else if (originalCard is MagicCard)
+		{
+			return ScriptableObject.CreateInstance<MagicCard>();
+		}
+		else if (originalCard is TrapCard)
+		{
+			return ScriptableObject.CreateInstance<TrapCard>();
+		}
+		else { Debug.LogError("Card Creation from jsonfile is not type of anything"); return ScriptableObject.CreateInstance<Card>();  }
 	}
 }

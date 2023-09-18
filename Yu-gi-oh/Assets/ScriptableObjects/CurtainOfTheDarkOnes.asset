@@ -14,9 +14,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: 
   cardimage: {fileID: 21300000, guid: ef83758150551224bbb34919d94f61a9, type: 3}
+  iscardfaceup: 0
+  deathreason: 0
+  playManager: {fileID: 0}
+  trigger: 0
+  targetcard: {fileID: 0}
+  cardNameUsed1: 0
+  thisCardUsed: 0
+  NeedTarget: 0
+  Needtargetpos: 0
+  Needtargettype: 0
+  Needtargetowner: 0
+  Autotarget: 0
+  pos: 0
+  owner: {fileID: 0}
+  availableCard: 0
+  setturn: -1
+  attackchance: 1
+  changebattlepos: 1
   monstertype: 0
   attribute: 0
   level: 2
   archetype: 00000000
+  formation: 0
   atk: 600
   def: 500
+  originatk: 600
+  origindef: 500
+  summonmMethod: 0
