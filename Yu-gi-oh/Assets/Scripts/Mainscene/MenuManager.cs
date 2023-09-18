@@ -55,6 +55,7 @@ public class MenuManager : MonoBehaviour
 			aidecksize >= 40 && aidecksize <= 60 && aiextrasize <= 15)
 		{
 			gamemanager.setisuser(isuser);
+			Debug.Log(gamemanager.IsUser);
 			SceneManager.LoadScene("PlayScene");
 		}
 	}
