@@ -15,7 +15,7 @@ public class Fissure : IEffect
 	{
 		if ((card.pos != CardPosition.MagicField && card.pos != CardPosition.Hand) ||
 			(card.owner.playmanager.GetPage() != Page.Main1 && card.owner.playmanager.GetPage() != Page.Main2) ||
-			((card.owner.enemy.MonsterField.All(card => card == null)) || !(card.owner.enemy.MonsterField.Any(card => card.iscardfaceup)))
+			((card.owner.enemy.MonsterField.All(c => c == null)) || !(card.owner.enemy.MonsterField.Any(c => c != null && c.iscardfaceup)))
 			)
 		{
 			return false;

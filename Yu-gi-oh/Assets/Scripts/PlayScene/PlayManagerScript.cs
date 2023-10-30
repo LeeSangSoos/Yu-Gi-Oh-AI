@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class PlayManagerScript : MonoBehaviour
 {
@@ -45,8 +44,8 @@ public class PlayManagerScript : MonoBehaviour
 	public bool main1toend = false;
 	#endregion
 	#region Getter & Setter
-	public void ManagerWorkStart() { Debug.Log("Manager work on"); managerworkleft = true;  }
-	public void ManagerWorkEnd() { Debug.Log("Manager work End"); managerworkleft = false;  }
+	public void ManagerWorkStart() { Debug.Log("Manager work on"); managerworkleft = true; }
+	public void ManagerWorkEnd() { Debug.Log("Manager work End"); managerworkleft = false; }
 	#endregion
 	#region TimeFunctions
 	private void Awake()
@@ -126,18 +125,22 @@ public class PlayManagerScript : MonoBehaviour
 				EndAction();
 				break;
 		}
-		if(player.LifePoint <= 0){	GameOver(player.enemy);	}
-		else if(player.enemy.LifePoint <= 0) { GameOver(player); }
-		
-		for(int i=0;i<10;i++)
+		if (player.LifePoint <= 0) { GameOver(player.enemy); }
+		else if (player.enemy.LifePoint <= 0) { GameOver(player); }
+
+		//Set atk, def value on field
+		for (int i = 0; i < 10; i++)
 		{
 			if (i < 5)
 			{
 				if (player_6.MonsterField[i] != null)
 				{
 					MonsterCard mons = player_6.MonsterField[i] as MonsterCard;
-					atklist[i].GetComponentInChildren<Text>().text = mons.atk.ToString();
-					deflist[i].GetComponentInChildren<Text>().text = mons.def.ToString();
+					if (mons.iscardfaceup)
+					{
+						atklist[i].GetComponentInChildren<Text>().text = mons.atk.ToString();
+						deflist[i].GetComponentInChildren<Text>().text = mons.def.ToString();
+					}
 				}
 				else
 				{
@@ -147,12 +150,15 @@ public class PlayManagerScript : MonoBehaviour
 			}
 			else
 			{
-				int j = i- 5;
+				int j = i - 5;
 				if (player_12.MonsterField[j] != null)
 				{
 					MonsterCard mons = player_12.MonsterField[j] as MonsterCard;
-					atklist[i].GetComponentInChildren<Text>().text = mons.atk.ToString();
-					deflist[i].GetComponentInChildren<Text>().text = mons.def.ToString();
+					if (mons.iscardfaceup)
+					{
+						atklist[i].GetComponentInChildren<Text>().text = mons.atk.ToString();
+						deflist[i].GetComponentInChildren<Text>().text = mons.def.ToString();
+					}
 				}
 				else
 				{
@@ -161,7 +167,7 @@ public class PlayManagerScript : MonoBehaviour
 				}
 			}
 		}
-		
+
 	}
 	private void LateUpdate()
 	{
@@ -306,44 +312,6 @@ public class PlayManagerScript : MonoBehaviour
 
 	}
 
-	private void StandbyAction()
-	{
-
-	}
-
-	private void Main1Action()
-	{
-		/*player.normalsummon = true;
-		 *player.set = true;
-		 *player.normaleffect = true;
-		 *player.mainspecialsummon = true;
-		 */
-	}
-
-	private void BattleAction()
-	{
-		if(pageTime == PageTime.Start)
-		{
-			foreach (Card card in player.MonsterField)
-			{
-				card.attackchance = 1;
-			}
-			foreach (Card card in player.enemy.MonsterField)
-			{
-				card.attackchance = 1;
-			}
-		}
-	}
-
-	private void Main2Action()
-	{
-		/*player.normalsummon = true;
-		 *player.set = true;
-		 *player.normaleffect = true;
-		 *player.mainspecialsummon = true;
-		 */
-	}
-
 	private void EndAction()
 	{
 		if (pageTime == PageTime.End)
@@ -436,9 +404,10 @@ public class PlayManagerScript : MonoBehaviour
 	#region CardActivationValidation Check Functions
 	public bool CheckActiveValid(Card card, Trigger trigger, Card targetcard)
 	{
-		if ((card.trigger != trigger && card.trigger!=Trigger.Any) || card.thisCardUsed) {
+		if ((card.trigger != trigger && card.trigger != Trigger.Any) || card.thisCardUsed)
+		{
 
-			return false; 
+			return false;
 		}
 		if (card.NeedTarget)
 		{
@@ -456,7 +425,7 @@ public class PlayManagerScript : MonoBehaviour
 		List<Card> cards = new List<Card>();
 		foreach (Card card in CardsInGame)
 		{
-			if(card.owner == user)
+			if (card.owner == user)
 			{
 				if (CheckActiveValid(card, trigger, targetcard))
 				{
@@ -492,9 +461,10 @@ public class PlayManagerScript : MonoBehaviour
 		//If there is card able to activate, call activation method of enemy
 		if (cards.Count > 0)
 		{
-			sender.enemy.CheckCardListForActivate(cards);
+			sender.enemy.CheckCardListForActivate(cards, recentactivatedcard);
 		}
-		else {//If not, call deactivation method
+		else
+		{//If not, call deactivation method
 			ChainProcess2(sender.enemy, recentactivatedcard);
 		}
 	}
@@ -538,16 +508,16 @@ public class PlayManagerScript : MonoBehaviour
 				}
 			}
 		}
-		foreach(Card card in chainList)
+		foreach (Card card in chainList)
 		{
 			switch (card.pos)
 			{
 				case CardPosition.MonsterField:
 					card.owner.OutOfMonsterField(card.owner.MonsterField.IndexOf(card));
-					card.owner.ToGrave(card); 
+					card.owner.ToGrave(card);
 					break;
 				case CardPosition.MagicField:
-					if(card is MagicCard)
+					if (card is MagicCard)
 					{
 						MagicCard magic = card as MagicCard;
 						if (magic.magictype == MagicCardtype.Normal)

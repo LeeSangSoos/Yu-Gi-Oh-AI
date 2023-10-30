@@ -18,6 +18,7 @@ public class GameManagerScript : MonoBehaviour
 	private List<IEffect> effects = new List<IEffect>();
 	public List<IEffect> IEffects { get { return effects; } }
 
+	[SerializeField]
 	private bool isuser;
 
 	private void Awake()
@@ -42,6 +43,7 @@ public class GameManagerScript : MonoBehaviour
 			{
 				CardData2.Add(card);
 			}
+			isuser = true;
 		}
 		OnGameStart = false;
 	}

@@ -214,6 +214,7 @@ public class Player : MonoBehaviour
 	}
 	public void MagicTrapEffectFromHand(Card card, int pos)
 	{
+
 		OutOfHand(card);
 		ToMagicField(card, pos, true);
 		PlayerEndWork();
@@ -221,6 +222,7 @@ public class Player : MonoBehaviour
 	}
 	public void MagicTrapEffectOnField(Card card)
 	{
+
 		PlayerOnWork();
 		if (!card.EffectCondition()) { PlayerEndWork();  return; }
 		card.iscardfaceup = true;
@@ -229,28 +231,6 @@ public class Player : MonoBehaviour
 		PlayerEndWork();
 		EffectAddToChain(card, null);
 	}
-	#region monsterhandfunction
-	public void Summon1_FromHand()
-	{
-		MonsterCard card = (MonsterCard)CardOnWork;
-		if (card.SummonMethod == SummonMethod.Normal)
-		{
-
-		}
-	}
-	public void Set()
-	{
-
-	}
-	public void Summon2()
-	{
-
-	}
-	public void Effect()
-	{
-
-	}
-	#endregion
 	#endregion
 	#region MonsterField Fuctions
 	public void NormalSummon(Card card, int pos, int level, int cost1, int cost2)
@@ -315,7 +295,7 @@ public class Player : MonoBehaviour
 		{
 			return;
 		}
-		if (playercard.attackchance <= 0) return;
+		if (playercard.attackchance <= 0 || !attackcard.iscardfaceup) return;
 		if (playmanager.GetPage() == Page.Battle && playmanager.GetPageTime() == PageTime.OnGoing && playercard.formation == Formation.Attack)
 		{
 			PlayerOnWork();
@@ -340,6 +320,10 @@ public class Player : MonoBehaviour
 			}
 			else if (enemycard.formation == Formation.Defence || enemycard.formation == Formation.Set)
 			{
+				if (enemycard.formation == Formation.Set)
+				{
+					ReverseMonster(enemycard);
+				}
 				if (enemycard.def < playercard.atk)
 				{
 					playmanager.DestroyCard(enemycard, DeathReason.BattleDestory);
@@ -352,10 +336,6 @@ public class Player : MonoBehaviour
 				{
 					LifePointDown(enemycard.def - playercard.atk);
 				}
-				if (enemycard.formation == Formation.Set)
-				{
-					ReverseMonster(enemycard);
-				}
 			}
 			playercard.attackchance--;
 			playercard.changebattlepos--;
@@ -365,7 +345,7 @@ public class Player : MonoBehaviour
 	public void DirectAttack(Card attackcard)
 	{
 		MonsterCard playercard = attackcard as MonsterCard;
-		if (playercard.attackchance <= 0) return;
+		if (playercard.attackchance <= 0 || !attackcard.iscardfaceup) return;
 		if (playmanager.GetPage() == Page.Battle && playmanager.GetPageTime() == PageTime.OnGoing && playercard.formation == Formation.Attack)
 		{
 			PlayerOnWork();
@@ -379,7 +359,7 @@ public class Player : MonoBehaviour
 	{
 		if (card.iscardfaceup) { return; }
 		int index = card.owner.MonsterField.IndexOf(card);
-		card.owner.MonsterField[index].GetComponent<Image>().sprite = card.CardImage;
+		card.owner.MonsterZone[index].GetComponent<Image>().sprite = card.CardImage;
 		card.iscardfaceup = true;
 	}
 	public void ChangeBattlePosition(Card card)
@@ -556,7 +536,7 @@ public class Player : MonoBehaviour
 	public void WaitForPageWork() { workleft = true; }
 	public void ActivateCardLeft() { }
 	#endregion
-	#region User Functions
+	#region UserActionCall
 	public void UserAction(Card card)
 	{
 		userscript.CardClickEvent(card);
@@ -778,7 +758,7 @@ public class Player : MonoBehaviour
 	}
 	#endregion
 	#region Effects Activation
-	public void CheckCardListForActivate(List<Card> cardlist)
+	public void CheckCardListForActivate(List<Card> cardlist, Card recentactivatedcard)
 	{
 		if (isuser)
 		{
@@ -786,7 +766,7 @@ public class Player : MonoBehaviour
 		}
 		else
 		{
-
+			aiscript.SeeCardsToActivate(cardlist, recentactivatedcard as MonsterCard);
 		}
 	}
 	public void AddChainEffect(Card card)
@@ -809,44 +789,38 @@ public class Player : MonoBehaviour
 	{
 		PlayerOnWork();
 		bool goodtogo = true;
-		if (isuser)
+		if (card.NeedTarget)
 		{
-			if (card.NeedTarget)
+			if (card.Autotarget)
 			{
-				if (card.Autotarget)
-				{
-					target = card.GetAutoTarget();
-				}
-				if (target == null)
+				target = card.GetAutoTarget();
+			}
+			if (target == null)
+			{
+				goodtogo = false;
+			}
+			if (card.Needtargetpos == CardPosition.MonsterField)
+			{
+				if (target.pos != CardPosition.MonsterField)
 				{
 					goodtogo = false;
 				}
-				if (card.Needtargetpos == CardPosition.MonsterField)
-				{
-					if (target.pos != CardPosition.MonsterField)
-					{
-						goodtogo = false;
-					}
-				}
-				if (card.Needtargetowner == TargetOwner.Mine)
-				{
-
-				}
-				if (card.Needtargettype == TargetType.Monster)
-				{
-					if (target is not MonsterCard)
-					{
-						goodtogo = false;
-					}
-				}
-				card.targetcard = target;
 			}
+			if (card.Needtargetowner == TargetOwner.Mine)
+			{
+
+			}
+			if (card.Needtargettype == TargetType.Monster)
+			{
+				if (target is not MonsterCard)
+				{
+					goodtogo = false;
+				}
+			}
+			card.targetcard = target;
 		}
-		if (card.name == "TrapHole")
-			Debug.Log(card.targetcard);
 		if (!card.EffectCondition()) goodtogo = false;
-		if (card.name == "TrapHole")
-			Debug.Log(goodtogo);
+	
 		if (goodtogo)
 		{
 			PlayerEndWork();
@@ -854,8 +828,16 @@ public class Player : MonoBehaviour
 		}
 		else
 		{
-			userscript.WhatToDo.text = "Choose target";
-			userscript.whatwork = WhatWork.ChooseTarget;
+			if (isuser)
+			{
+				userscript.WhatToDo.text = "Choose target";
+				userscript.whatwork = WhatWork.ChooseTarget;
+			}
+			else
+			{
+				target = aiscript.ChooseTargetCard(card as MagicCard);
+				EffectAddToChain(card, target);
+			}
 		}
 		return;
 	}
