@@ -224,7 +224,6 @@ public class User : MonoBehaviour
 			}
 			else if (whatwork == WhatWork.EffectFromHand)
 			{
-				player.PlayerEndWork();
 				player.MagicTrapEffectFromHand(cardonwork, pos);
 			}
 			else if (whatwork == WhatWork.Null && player.MagicTrapField[pos] != null) //Click Field At AnyTime
@@ -389,6 +388,10 @@ public class User : MonoBehaviour
 		whatwork = WhatWork.Null;
 		player.PlayerEndWork();
 		ChooseEffectToActivatePanel.SetActive(false);
+		foreach (Transform child in ChooseEffectToActivateParent.transform)
+		{
+			Destroy(child.gameObject);
+		}
 		player.CancelEffect();
 	}
 	public void SeeCardsToActivate(List<Card> cardlist)
