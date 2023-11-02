@@ -1,7 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using static UnityEngine.GraphicsBuffer;
+using UnityEngine;
 
 public class AiPlayer : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class AiPlayer : MonoBehaviour
 	{
 		if (player.myturn)
 		{
-			if ((playmanager.GetPage() == Page.Main1 || playmanager.GetPage() == Page.Main2) && playmanager.GetPageTime()==PageTime.OnGoing)
+			if ((playmanager.GetPage() == Page.Main1 || playmanager.GetPage() == Page.Main2) && playmanager.GetPageTime() == PageTime.OnGoing)
 			{
 				/*Normal summon process
 					 * Check player.turnsummon >= 1
@@ -25,7 +24,7 @@ public class AiPlayer : MonoBehaviour
 				{
 					List<MonsterCard> monsters = new List<MonsterCard>();
 					int CountMonsterOnField = player.MonsterField.Count(card => card != null);
-					
+
 					int PlaceToSummon = -1;
 
 					foreach (Card card in player.Hand)
@@ -78,7 +77,7 @@ public class AiPlayer : MonoBehaviour
 					}
 				}
 
-				/*Magic/Trap set
+				/*Trap set
 				 */
 				for (int i = 0; i < 5; i++)
 				{
@@ -86,7 +85,7 @@ public class AiPlayer : MonoBehaviour
 					{
 						foreach (Card hand in player.Hand.ToList())
 						{
-							if (hand is MagicCard || hand is TrapCard)
+							if (hand is TrapCard)
 							{
 								player.SetMagicTrap(hand, i);
 							}
@@ -98,54 +97,57 @@ public class AiPlayer : MonoBehaviour
 				 * See set cards.
 				 * if card is available to act activate it
 				 * 
-				*/
+				
 				for (int i = 0; i < player.MagicTrapField.Count; i++)
 				{
 					MagicCard magiccard;
-					if (player.MagicTrapField[i] is MagicCard)
+					if (!playmanager.IsWorkLeft())
 					{
-						magiccard = player.MagicTrapField[i] as MagicCard;
-						if (magiccard.EffectCondition())
+						if (player.MagicTrapField[i] is MagicCard)
 						{
-							if (!playmanager.IsWorkLeft())
+							magiccard = player.MagicTrapField[i] as MagicCard;
+							if (magiccard.EffectCondition())
 							{
 								player.PlayerOnWork();
 								player.MagicTrapEffectOnField(magiccard);
 							}
 						}
 					}
-				}
+				}*/
 
 				/*Magic Handactivate
-				 * 
-				for (int i = 0; i < player.Hand.Count; i++)
+				 */
+				if (!playmanager.SomeoneWorking() && !playmanager.ChainOnProcess)
 				{
-					MagicCard magiccard;
-					if(player.Hand[i] is MagicCard)
+					for (int i = 0; i < player.Hand.Count; i++)
 					{
-						magiccard = player.Hand[i] as MagicCard;
-						if (magiccard.EffectCondition()) {
-							player.PlayerOnWork();
-							for (int j = 0; j < 5;j++)
+						MagicCard magiccard;
+						if (player.Hand[i] is MagicCard)
+						{
+							magiccard = player.Hand[i] as MagicCard;
+							if (magiccard.EffectCondition())
 							{
-								if (player.MagicTrapField[j] == null)
+								player.PlayerOnWork();
+								for (int j = 0; j < 5; j++)
 								{
-									player.MagicTrapEffectFromHand(magiccard, j);
-									break;
+									if (player.MagicTrapField[j] == null)
+									{
+										player.MagicTrapEffectFromHand(magiccard, j);
+										break;
+									}
 								}
 							}
 						}
 					}
 				}
-				*/
-
+				
 			}
 			else if (playmanager.GetPage() == Page.Battle)
 			{
 
 				if (player.MonsterField.Any(monsterCard => monsterCard != null))
 				{
-					for (int m=0;m<player.MonsterField.Count;m++)
+					for (int m = 0; m < player.MonsterField.Count; m++)
 					{
 						MonsterCard monsterCard = player.MonsterField[m] as MonsterCard;
 						if (monsterCard != null)
@@ -191,17 +193,17 @@ public class AiPlayer : MonoBehaviour
 		if (player.myturn)
 		{
 			if (player.WorkLeft) player.NoWorkLeft();
-			
+
 			player.ToPageEnd();
 		}
 	}
 
 	List<int> FindVictom(MonsterCard monster)
 	{
-		List<int> list = new List<int>{ -1, -1 };
+		List<int> list = new List<int> { -1, -1 };
 		List<int> monslist = new List<int>();
 
-		for(int i=0;i<5;i++)
+		for (int i = 0; i < 5; i++)
 		{
 			if (player.MonsterField[i] != null)
 			{
@@ -211,14 +213,14 @@ public class AiPlayer : MonoBehaviour
 
 		if (monster.level >= 7)
 		{
-			if(monslist.Count < 2) { return list; }
+			if (monslist.Count < 2) { return list; }
 			int rand = Random.Range(0, monslist.Count);
 			list[0] = (rand);
 			monslist.RemoveAt(rand);
 			rand = Random.Range(0, monslist.Count);
 			list[1] = (rand);
 		}
-		else if(monster.level >= 5)
+		else if (monster.level >= 5)
 		{
 			if (monslist.Count < 1) { return list; }
 			int rand = Random.Range(0, monslist.Count);
@@ -230,21 +232,14 @@ public class AiPlayer : MonoBehaviour
 
 	public void SeeCardsToActivate(List<Card> cards, MonsterCard target)
 	{
-		if (target.atk >= 2000)
-		{
-			player.EffectAddToChain(cards[0], target);
-		}
-		else
-		{
-			player.PlayerEndWork();
-			player.CancelEffect();
-		}
+		Debug.Log("SeeCardsToActivate");
+		player.EffectAddToChain(cards[0], target);
 	}
 
 	public Card ChooseTargetCard(MagicCard card)
 	{
-		MonsterCard target = new MonsterCard();
-		foreach(MonsterCard t in player.MonsterField)
+		MonsterCard target = ScriptableObject.CreateInstance<MonsterCard>();
+		foreach (MonsterCard t in player.MonsterField)
 		{
 			if (CheckTarget(card, t))
 			{

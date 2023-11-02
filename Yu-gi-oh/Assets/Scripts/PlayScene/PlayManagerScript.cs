@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -42,10 +43,13 @@ public class PlayManagerScript : MonoBehaviour
 
 	//Boolean values
 	public bool main1toend = false;
+	public bool ChainOnProcess = false;
 	#endregion
 	#region Getter & Setter
-	public void ManagerWorkStart() { Debug.Log("Manager work on"); managerworkleft = true; }
-	public void ManagerWorkEnd() { Debug.Log("Manager work End"); managerworkleft = false; }
+	public void ManagerWorkStart() { //Debug.Log("Manager work on"); 
+		managerworkleft = true; }
+	public void ManagerWorkEnd() { //Debug.Log("Manager work End"); 
+		managerworkleft = false; }
 	#endregion
 	#region TimeFunctions
 	private void Awake()
@@ -197,6 +201,10 @@ public class PlayManagerScript : MonoBehaviour
 	public bool IsWorkLeft()
 	{
 		return player_6.WorkLeft || player_12.WorkLeft || managerworkleft;
+	}
+	public bool SomeoneWorking()
+	{
+		return player_6.GetIsWorking()|| player_12.GetIsWorking() || managerworkleft;
 	}
 
 	int cardnum = 0;
@@ -414,7 +422,7 @@ public class PlayManagerScript : MonoBehaviour
 			if (card.effect.TargetCondition(targetcard)) card.targetcard = targetcard;
 			else return false;
 		}
-		if (card.EffectCondition())
+		if (card.EffectCondition() && card is TrapCard)
 		{
 			return true;
 		}
@@ -446,6 +454,7 @@ public class PlayManagerScript : MonoBehaviour
 		triggerList.Push(trigger);
 		player12_chain = true;
 		player6_chain = true;
+		ChainOnProcess = true;
 	}
 	public void ChainProcess(Player sender, Card recentactivatedcard)
 	{
@@ -478,7 +487,7 @@ public class PlayManagerScript : MonoBehaviour
 		//If Both players activation is false, break chain and execute
 		if (player12_chain == false && player6_chain == false)
 		{
-			ExecuteChainEffect();
+			StartCoroutine(ExecuteChainEffect());
 			return;
 		}
 		else //If one is still available, call chain for enemy again
@@ -490,12 +499,21 @@ public class PlayManagerScript : MonoBehaviour
 	{
 		card.cardNameUsed1 = true;
 		card.thisCardUsed = true;
+		if (card is TrapCard) {
+			int index = card.owner.MagicTrapField.IndexOf(card);
+			card.owner.MagicZone[index].GetComponent<Image>().sprite = card.CardImage;
+			card.iscardfaceup = true;
+		}
 		chainList.Push(card);
 	}
-	public void ExecuteChainEffect()
+	public IEnumerator ExecuteChainEffect()
 	{
+		yield return new WaitForSeconds(0.5f);
+		if (chainList.Count > 0)
+			Debug.Log("Chain Execution Start : ");
 		foreach (Card card in chainList)
 		{
+			Debug.Log(card.ToString());
 			card.Effect();
 			card.cardNameUsed1 = false;
 			card.thisCardUsed = false;
@@ -542,6 +560,7 @@ public class PlayManagerScript : MonoBehaviour
 		{
 			card.availableCard = true;
 		}
+		ChainOnProcess = false;
 		ManagerWorkEnd();
 	}
 	#endregion

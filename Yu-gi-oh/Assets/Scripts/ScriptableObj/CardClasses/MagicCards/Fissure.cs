@@ -42,7 +42,7 @@ public class Fissure : IEffect
 				}
 				MonsterCard mons = monster as MonsterCard;
 				if (target == null) target = mons;
-				else if (target.atk < mons.atk) target = mons;
+				else if (target.atk > mons.atk) target = mons;
 			}
 		}
 		return target;

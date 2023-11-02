@@ -394,7 +394,9 @@ public class Player : MonoBehaviour
 	#endregion
 	#region LifePointFunctions
 	public void LifePointUp(int amount) { LifePoint += amount; LifePointText.text = LifePoint.ToString(); }
-	public void LifePointDown(int amount) { LifePoint -= amount; LifePointText.text = LifePoint.ToString(); }
+	public void LifePointDown(int amount) { LifePoint -= amount; 
+		if(LifePoint < 0) LifePoint = 0;
+		LifePointText.text = LifePoint.ToString(); }
 	#endregion
 	#region TimeFunctions
 	private void Update()
@@ -495,7 +497,7 @@ public class Player : MonoBehaviour
 		if (!isworking)
 		{
 			isworking = true;
-			Debug.Log((isuser ? "User " : "Ai ") + " On work");
+			//Debug.Log((isuser ? "User " : "Ai ") + " On work");
 		}
 	}
 	public void PlayerEndWork()
@@ -508,7 +510,7 @@ public class Player : MonoBehaviour
 				userscript.whatwork = WhatWork.Null;
 				userscript.WhatToDo.text = "";
 			}
-			Debug.Log((isuser ? "User " : "Ai ") + " Work Over");
+			//Debug.Log((isuser ? "User " : "Ai ") + " Work Over");
 		}
 	}
 	public bool GetIsWorking()
@@ -526,11 +528,8 @@ public class Player : MonoBehaviour
 	public void ToEndPage()
 	{
 		if (playmanager.IsWorkLeft()) return;
-		if (playmanager.GetPageTime() == PageTime.OnGoing)
-		{
-			workleft = false;
-			playmanager.main1toend = true;
-		}
+		workleft = false;
+		playmanager.main1toend = true;
 	}
 	public void NoWorkLeft() { workleft = false; }
 	public void WaitForPageWork() { workleft = true; }
@@ -785,10 +784,13 @@ public class Player : MonoBehaviour
 	{
 		playmanager.ChainProcess2(this, playmanager.WhenActivatedCard);
 	}
-	public void EffectAddToChain(Card card, Card target)
+	private const int MaxRecursiveCalls = 10;
+
+	public void EffectAddToChain(Card card, Card target, int recursiveCount = 0)
 	{
 		PlayerOnWork();
 		bool goodtogo = true;
+
 		if (card.NeedTarget)
 		{
 			if (card.Autotarget)
@@ -808,7 +810,7 @@ public class Player : MonoBehaviour
 			}
 			if (card.Needtargetowner == TargetOwner.Mine)
 			{
-
+				
 			}
 			if (card.Needtargettype == TargetType.Monster)
 			{
@@ -819,8 +821,9 @@ public class Player : MonoBehaviour
 			}
 			card.targetcard = target;
 		}
+
 		if (!card.EffectCondition()) goodtogo = false;
-	
+
 		if (goodtogo)
 		{
 			PlayerEndWork();
@@ -835,11 +838,17 @@ public class Player : MonoBehaviour
 			}
 			else
 			{
+				if (recursiveCount >= MaxRecursiveCalls)
+				{
+					return;
+				}
+
 				target = aiscript.ChooseTargetCard(card as MagicCard);
-				EffectAddToChain(card, target);
+				EffectAddToChain(card, target, recursiveCount + 1);
 			}
 		}
 		return;
 	}
+
 	#endregion
 }

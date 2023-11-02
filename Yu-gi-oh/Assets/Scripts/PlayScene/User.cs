@@ -450,19 +450,19 @@ public class User : MonoBehaviour
 	}
 	public void MyGraveView()
 	{
-		if (player.GetIsWorking()) return;
+		if (playmanager.SomeoneWorking()) return;
 		player.PlayerOnWork();
 		SeeCardList(player, CardPosition.Grave);
 	}
 	public void MyDeckView()
 	{
-		if (player.GetIsWorking()) return;
+		if (playmanager.SomeoneWorking()) return;
 		player.PlayerOnWork();
 		SeeCardList(player, CardPosition.MainDeck);
 	}
 	public void MyExtraDeckView()
 	{
-		if (player.GetIsWorking()) return;
+		if (playmanager.SomeoneWorking()) return;
 		player.PlayerOnWork();
 		SeeCardList(player, CardPosition.ExtraDeck);
 	}
@@ -474,25 +474,25 @@ public class User : MonoBehaviour
 	}
 	public void EnemyGraveView()
 	{
-		if (player.GetIsWorking()) return;
+		if (playmanager.SomeoneWorking()) return;
 		player.PlayerOnWork();
 		SeeCardList(player.enemy, CardPosition.Grave);
 	}
 	public void EnemyDeckView()
 	{
-		if (player.GetIsWorking()) return;
+		if (playmanager.SomeoneWorking()) return;
 		player.PlayerOnWork();
 		SeeCardList(player.enemy, CardPosition.MainDeck);
 	}
 	public void EnemyExtraDeckView()
 	{
-		if (player.GetIsWorking()) return;
+		if (playmanager.SomeoneWorking()) return;
 		player.PlayerOnWork();
 		SeeCardList(player.enemy, CardPosition.ExtraDeck);
 	}
 	public void EnemyExiledView()
 	{
-		if (player.GetIsWorking()) return;
+		if (playmanager.SomeoneWorking()) return;
 		player.PlayerOnWork();
 		SeeCardList(player.enemy, CardPosition.Exiled);
 	}

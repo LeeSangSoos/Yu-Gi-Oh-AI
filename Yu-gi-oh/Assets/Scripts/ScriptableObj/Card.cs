@@ -58,10 +58,6 @@ public class Card : ScriptableObject
 	public int changebattlepos = 1;
 	#endregion
 	#region CardFunction
-	public Card()
-	{
-		
-	}
 	public virtual void CopyProperties(Card other)
 	{
 		// Copy basic properties
