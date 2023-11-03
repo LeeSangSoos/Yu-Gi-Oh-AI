@@ -57,7 +57,7 @@ public enum MonsterCardType
 }
 public enum Attribute
 {
-	DARK, EARTH
+	DARK, EARTH, WATER
 }
 public enum Archetype
 {

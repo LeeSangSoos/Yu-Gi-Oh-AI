@@ -1,12 +1,12 @@
 public class TrapHole : IEffect
 {
 	#region Card Effect Works Functions
-	public override bool TargetCondition(Card target)
+	public override bool TargetCondition(Card card, Card target)
 	{
 		if (target is MonsterCard)
 		{
 			MonsterCard targetmonster = target as MonsterCard;
-			if (targetmonster.atk < 1000)
+			if (targetmonster.atk < 1000 || targetmonster.owner==card.owner)
 			{
 				return false;
 			}
@@ -25,22 +25,25 @@ public class TrapHole : IEffect
 
 			return false;
 		}
-		if (card.owner == card.targetcard.owner)
+		if (card.targetcard != null)
 		{
+			if (card.owner == card.targetcard.owner)
+			{
 
-			return false;
-		}
-		if (card.targetcard is MonsterCard)
-		{
-			MonsterCard targetmonster = card.targetcard as MonsterCard;
-			if (targetmonster.atk < 1000)
+				return false;
+			}
+			if (card.targetcard is MonsterCard)
+			{
+				MonsterCard targetmonster = card.targetcard as MonsterCard;
+				if (targetmonster.atk < 1000)
+				{
+					return false;
+				}
+			}
+			else
 			{
 				return false;
 			}
-		}
-		else
-		{
-			return false;
 		}
 		return true;
 	}
@@ -50,7 +53,19 @@ public class TrapHole : IEffect
 	}
 	public override Card AutoTargetFunction(Card card)
 	{
-		return card.targetcard;
+		MonsterCard monster;
+		foreach (Card c in card.playManager.recentCards)
+		{
+			if(c is MonsterCard)
+			{
+				monster = c as MonsterCard;
+				if (monster.atk >= 1000 && monster.owner!=card.owner)
+				{
+					return monster;
+				}
+			}
+		}
+		return null;
 	}
 	public override void RemovePassiveEffect(Card card)
 	{

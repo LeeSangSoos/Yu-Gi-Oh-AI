@@ -1,12 +1,19 @@
 using System;
 using System.Linq;
+using System.Net;
 
 public class VioletCrystal : IEffect
 {
 	#region Card Effect Works Functions
-	public override bool TargetCondition(Card target)
+	public override bool TargetCondition(Card card, Card target)
 	{
-		return false;
+		if (target == null || target is not MonsterCard) return false;
+
+		MonsterCard monsterCard = target as MonsterCard;
+		if (monsterCard.monstertype == MonsterCardType.Zombie && monsterCard.iscardfaceup)
+			return true;
+		else
+			return false;
 	}
 	public override bool EffectCondition(Card card)
 	{
@@ -21,7 +28,7 @@ public class VioletCrystal : IEffect
 			if (card.targetcard is MonsterCard)
 			{
 				MonsterCard monster = card.targetcard as MonsterCard;
-				return monster.monstertype == MonsterCardType.Zombie;
+				return monster.monstertype == MonsterCardType.Zombie && monster.iscardfaceup;
 			}
 			else return false;
 		}
@@ -30,7 +37,7 @@ public class VioletCrystal : IEffect
 			if (card != null)
 			{
 				MonsterCard monster = card as MonsterCard;
-				return monster.monstertype == MonsterCardType.Zombie;
+				return monster.monstertype == MonsterCardType.Zombie && monster.iscardfaceup;
 			}
 			return false;
 		}) || card.owner.enemy.MonsterField.Any(card =>
@@ -38,7 +45,7 @@ public class VioletCrystal : IEffect
 			if (card != null)
 			{
 				MonsterCard monster = card as MonsterCard;
-				return monster.monstertype == MonsterCardType.Zombie;
+				return monster.monstertype == MonsterCardType.Zombie && monster.iscardfaceup;
 			}
 			return false;
 		}))
@@ -51,6 +58,7 @@ public class VioletCrystal : IEffect
 		{
 			MonsterCard mons = card.targetcard as MonsterCard;
 			mons.atk += 300;
+			mons.def += 300;
 		}
 	}
 	public override Card AutoTargetFunction(Card card)

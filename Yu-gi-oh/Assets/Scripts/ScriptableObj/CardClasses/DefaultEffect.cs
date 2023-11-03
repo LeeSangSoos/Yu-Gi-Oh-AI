@@ -1,8 +1,8 @@
 public class DefaultEffect : IEffect
 {
-	public override bool TargetCondition(Card target)
+	public override bool TargetCondition(Card card, Card target)
 	{
-		return false;
+		return true;
 	}
 	public override bool EffectCondition(Card card)
 	{

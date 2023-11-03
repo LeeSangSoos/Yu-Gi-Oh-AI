@@ -214,7 +214,6 @@ public class Player : MonoBehaviour
 	}
 	public void MagicTrapEffectFromHand(Card card, int pos)
 	{
-
 		OutOfHand(card);
 		ToMagicField(card, pos, true);
 		PlayerEndWork();
@@ -222,9 +221,8 @@ public class Player : MonoBehaviour
 	}
 	public void MagicTrapEffectOnField(Card card)
 	{
-
 		PlayerOnWork();
-		if (!card.EffectCondition()) { PlayerEndWork();  return; }
+		if (!card.EffectCondition() && card is not TrapCard) { PlayerEndWork();  return; }
 		card.iscardfaceup = true;
 		int index = MagicTrapField.IndexOf(card);
 		MagicZone[index].GetComponent<Image>().sprite = card.CardImage;
@@ -235,6 +233,7 @@ public class Player : MonoBehaviour
 	#region MonsterField Fuctions
 	public void NormalSummon(Card card, int pos, int level, int cost1, int cost2)
 	{
+		Debug.Log("NormalSummon : " + card);
 		if (turnsummon <= 0 || (playmanager.GetPage() != Page.Main1 && playmanager.GetPage() != Page.Main2)) { PlayerEndWork(); return; }
 		if (level >= 7)
 		{
@@ -262,6 +261,7 @@ public class Player : MonoBehaviour
 	}
 	public void SetMonster(Card card, int pos, int level, int cost1, int cost2)
 	{
+		Debug.Log("SetSummon : " + card);
 		if (turnsummon <= 0 || (playmanager.GetPage() != Page.Main1 && playmanager.GetPage() != Page.Main2)) { PlayerEndWork(); return; }
 		if (level >= 7)
 		{
@@ -394,7 +394,9 @@ public class Player : MonoBehaviour
 	#endregion
 	#region LifePointFunctions
 	public void LifePointUp(int amount) { LifePoint += amount; LifePointText.text = LifePoint.ToString(); }
-	public void LifePointDown(int amount) { LifePoint -= amount; LifePointText.text = LifePoint.ToString(); }
+	public void LifePointDown(int amount) { LifePoint -= amount; 
+		if(LifePoint < 0) LifePoint = 0;
+		LifePointText.text = LifePoint.ToString(); }
 	#endregion
 	#region TimeFunctions
 	private void Update()
@@ -495,7 +497,7 @@ public class Player : MonoBehaviour
 		if (!isworking)
 		{
 			isworking = true;
-			Debug.Log((isuser ? "User " : "Ai ") + " On work");
+			//Debug.Log((isuser ? "User " : "Ai ") + " On work");
 		}
 	}
 	public void PlayerEndWork()
@@ -508,7 +510,7 @@ public class Player : MonoBehaviour
 				userscript.whatwork = WhatWork.Null;
 				userscript.WhatToDo.text = "";
 			}
-			Debug.Log((isuser ? "User " : "Ai ") + " Work Over");
+			//Debug.Log((isuser ? "User " : "Ai ") + " Work Over");
 		}
 	}
 	public bool GetIsWorking()
@@ -526,11 +528,8 @@ public class Player : MonoBehaviour
 	public void ToEndPage()
 	{
 		if (playmanager.IsWorkLeft()) return;
-		if (playmanager.GetPageTime() == PageTime.OnGoing)
-		{
-			workleft = false;
-			playmanager.main1toend = true;
-		}
+		workleft = false;
+		playmanager.main1toend = true;
 	}
 	public void NoWorkLeft() { workleft = false; }
 	public void WaitForPageWork() { workleft = true; }
@@ -643,12 +642,14 @@ public class Player : MonoBehaviour
 		card.pos = CardPosition.MagicField;
 		if (isfaceup)
 		{
+			Debug.Log(this + " activate magic/trap : " + card);
 			MagicZone[pos].GetComponent<Image>().sprite = card.CardImage;
 			MagicZone[pos].eulerAngles = new Vector3(0, 0, 0);
 			card.iscardfaceup = isfaceup;
 		}
 		else
 		{
+			Debug.Log(this + "set magic/trap : " + card);
 			MagicZone[pos].GetComponent<Image>().sprite = backsideimage;
 			MagicZone[pos].eulerAngles = new Vector3(0, 0, 0);
 			card.iscardfaceup = isfaceup;
@@ -766,18 +767,18 @@ public class Player : MonoBehaviour
 		}
 		else
 		{
-			aiscript.SeeCardsToActivate(cardlist, recentactivatedcard as MonsterCard);
+			aiscript.SeeCardsToActivate(cardlist, recentactivatedcard);
 		}
 	}
 	public void AddChainEffect(Card card)
 	{
 		playmanager.AddChainEffect(card);
 		playmanager.AddTrigger(Trigger.EffectActivated);
+		PlayerEndWork();
 		playmanager.ChainProcess(this, card);
 	}
 	public void AddTrigger(Card card, Trigger trigger)
 	{
-		playmanager.ManagerWorkStart();
 		playmanager.AddTrigger(trigger);
 		playmanager.ChainProcess(this, card);
 	}
@@ -785,10 +786,13 @@ public class Player : MonoBehaviour
 	{
 		playmanager.ChainProcess2(this, playmanager.WhenActivatedCard);
 	}
-	public void EffectAddToChain(Card card, Card target)
+	private const int MaxRecursiveCalls = 10;
+
+	public void EffectAddToChain(Card card, Card target, int recursiveCount = 0)
 	{
 		PlayerOnWork();
 		bool goodtogo = true;
+
 		if (card.NeedTarget)
 		{
 			if (card.Autotarget)
@@ -808,7 +812,7 @@ public class Player : MonoBehaviour
 			}
 			if (card.Needtargetowner == TargetOwner.Mine)
 			{
-
+				
 			}
 			if (card.Needtargettype == TargetType.Monster)
 			{
@@ -817,13 +821,13 @@ public class Player : MonoBehaviour
 					goodtogo = false;
 				}
 			}
-			card.targetcard = target;
 		}
-		if (!card.EffectCondition()) goodtogo = false;
-	
+
+		if (!card.EffectCondition() || !card.TargetTempCondition(target)) goodtogo = false;
+
 		if (goodtogo)
 		{
-			PlayerEndWork();
+			card.targetcard = target;
 			AddChainEffect(card);
 		}
 		else
@@ -835,11 +839,16 @@ public class Player : MonoBehaviour
 			}
 			else
 			{
+				if (recursiveCount >= MaxRecursiveCalls)
+				{
+					return;
+				}
 				target = aiscript.ChooseTargetCard(card as MagicCard);
-				EffectAddToChain(card, target);
+				EffectAddToChain(card, target, recursiveCount + 1);
 			}
 		}
 		return;
 	}
+
 	#endregion
 }
