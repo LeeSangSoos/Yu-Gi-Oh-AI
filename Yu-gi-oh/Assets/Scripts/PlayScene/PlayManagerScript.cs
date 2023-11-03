@@ -32,6 +32,7 @@ public class PlayManagerScript : MonoBehaviour
 	public Trigger triggerjustactivated;
 	public Card WhenActivatedCard; // ¶§
 	public List<Card> IfActivatedCard; //°æ¿ì
+	public List<Card> recentCards;
 
 	//UI objects
 	public GameObject CardPrefab;
@@ -410,20 +411,16 @@ public class PlayManagerScript : MonoBehaviour
 
 	#endregion
 	#region CardActivationValidation Check Functions
-	public bool CheckActiveValid(Card card, Trigger trigger, Card targetcard)
+	public bool CheckActiveValid(Card card, Trigger trigger)
 	{
 		if ((card.trigger != trigger && card.trigger != Trigger.Any) || card.thisCardUsed)
 		{
-
 			return false;
 		}
-		if (card.NeedTarget)
+		if (card.EffectCondition() && card is TrapCard && card.GetAutoTarget()!=null)
 		{
-			if (card.effect.TargetCondition(targetcard)) card.targetcard = targetcard;
-			else return false;
-		}
-		if (card.EffectCondition() && card is TrapCard)
-		{
+			Debug.Log(card.GetAutoTarget().ToString());
+			Debug.Log("list : " + card.name);
 			return true;
 		}
 		return false;
@@ -435,7 +432,7 @@ public class PlayManagerScript : MonoBehaviour
 		{
 			if (card.owner == user)
 			{
-				if (CheckActiveValid(card, trigger, targetcard))
+				if (CheckActiveValid(card, trigger))
 				{
 					card.availableCard = true;
 					cards.Add(card);
@@ -450,17 +447,20 @@ public class PlayManagerScript : MonoBehaviour
 	}
 	public void AddTrigger(Trigger trigger)
 	{
+		ManagerWorkStart();
 		triggerjustactivated = trigger;
 		triggerList.Push(trigger);
 		player12_chain = true;
 		player6_chain = true;
-		ChainOnProcess = true;
 	}
 	public void ChainProcess(Player sender, Card recentactivatedcard)
 	{
+		Debug.Log(sender + " started chain : " + recentactivatedcard);
+		ChainOnProcess = true;
 		List<Card> cards = new List<Card>(); //Card Able to activate
 		WhenActivatedCard = recentactivatedcard;
 		recentactivatedcard.thisCardUsed = true;
+		recentCards.Add(recentactivatedcard);
 
 		//Iterate through triggers and add enabled cards
 		foreach (Trigger trig in triggerList)
@@ -480,6 +480,7 @@ public class PlayManagerScript : MonoBehaviour
 	//No activation process
 	public void ChainProcess2(Player enemy, Card recentactivatedcard)
 	{
+		Debug.Log("CainP2 : " + enemy);
 		//Set current player Activation to false
 		if (enemy == player_12) player12_chain = false;
 		else player6_chain = false;
@@ -508,7 +509,7 @@ public class PlayManagerScript : MonoBehaviour
 	}
 	public IEnumerator ExecuteChainEffect()
 	{
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.2f);
 		if (chainList.Count > 0)
 			Debug.Log("Chain Execution Start : ");
 		foreach (Card card in chainList)
@@ -561,6 +562,7 @@ public class PlayManagerScript : MonoBehaviour
 			card.availableCard = true;
 		}
 		ChainOnProcess = false;
+		recentCards.Clear();
 		ManagerWorkEnd();
 	}
 	#endregion

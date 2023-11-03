@@ -7,9 +7,9 @@ using UnityEngine;
 public class Fissure : IEffect
 {
 	#region Card Effect Works Functions
-	public override bool TargetCondition(Card target)
+	public override bool TargetCondition(Card card, Card target)
 	{
-		return false;
+		return true;
 	}
 	public override bool EffectCondition(Card card)
 	{
@@ -41,8 +41,11 @@ public class Fissure : IEffect
 					throw new Exception(this.ToString() + "Target Unexpected value: not a MonsterCard");
 				}
 				MonsterCard mons = monster as MonsterCard;
-				if (target == null) target = mons;
-				else if (target.atk > mons.atk) target = mons;
+				if (mons.iscardfaceup)
+				{
+					if (target == null) target = mons;
+					else if (target.atk > mons.atk) target = mons;
+				}
 			}
 		}
 		return target;

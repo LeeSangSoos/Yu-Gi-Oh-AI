@@ -93,9 +93,13 @@ public class Card : ScriptableObject
 
 	#endregion
 	#region Card Effect Works Functions
+	public bool TargetTempCondition(Card target)
+	{
+		return effect.TargetCondition(this, target);
+	}
 	public bool TargetCondition()
 	{
-		return effect.TargetCondition(targetcard);
+		return effect.TargetCondition(this, targetcard);
 	}
 	public bool EffectCondition()
 	{

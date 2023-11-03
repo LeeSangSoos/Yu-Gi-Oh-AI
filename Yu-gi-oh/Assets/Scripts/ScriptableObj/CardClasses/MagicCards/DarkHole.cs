@@ -5,9 +5,9 @@ using System.Collections.Generic;
 public class DarkHole : IEffect
 {
 	#region Card Effect Works Functions
-	public override bool TargetCondition(Card target)
+	public override bool TargetCondition(Card card, Card target)
 	{
-		return false;
+		return true;
 	}
 	public override bool EffectCondition(Card card)
 	{

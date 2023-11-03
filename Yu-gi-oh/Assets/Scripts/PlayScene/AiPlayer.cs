@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,9 +7,27 @@ public class AiPlayer : MonoBehaviour
 {
 	public PlayManagerScript playmanager;
 	public Player player;
+	float stepDelay = 0.5f;
+	bool step_on_work = false;
 
-	void Update()
+	IEnumerator StepCoroutine()
 	{
+		while (true) // Infinite loop to keep the coroutine running
+		{
+			Step();
+			yield return new WaitForSeconds(stepDelay); // Wait for 0.3 seconds before the next step
+		}
+	}
+
+	private void Start()
+	{
+		StartCoroutine(StepCoroutine());
+	}
+
+	void Step()
+	{
+		if (step_on_work) { return; }
+		step_on_work = true;
 		if (player.myturn)
 		{
 			if ((playmanager.GetPage() == Page.Main1 || playmanager.GetPage() == Page.Main2) && playmanager.GetPageTime() == PageTime.OnGoing)
@@ -67,7 +86,7 @@ public class AiPlayer : MonoBehaviour
 						{
 							player.PlayerOnWork();
 							rand = Random.Range(0, 10);
-							if (rand < 5)
+							if (rand < 2)
 							{
 								player.SetMonster(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
 							}
@@ -117,8 +136,6 @@ public class AiPlayer : MonoBehaviour
 
 				/*Magic Handactivate
 				 */
-				if (!playmanager.SomeoneWorking() && !playmanager.ChainOnProcess)
-				{
 					for (int i = 0; i < player.Hand.Count; i++)
 					{
 						MagicCard magiccard;
@@ -127,20 +144,23 @@ public class AiPlayer : MonoBehaviour
 							magiccard = player.Hand[i] as MagicCard;
 							if (magiccard.EffectCondition())
 							{
-								player.PlayerOnWork();
+
 								for (int j = 0; j < 5; j++)
 								{
 									if (player.MagicTrapField[j] == null)
 									{
-										player.MagicTrapEffectFromHand(magiccard, j);
-										break;
+										if (!playmanager.SomeoneWorking() && !playmanager.ChainOnProcess)
+										{
+											Debug.Log("chain process? 2 : " + playmanager.ChainOnProcess);
+											Debug.Log("Effect act : " + magiccard);
+											player.MagicTrapEffectFromHand(magiccard, j);
+											break;
+										}
 									}
 								}
 							}
 						}
 					}
-				}
-				
 			}
 			else if (playmanager.GetPage() == Page.Battle)
 			{
@@ -176,16 +196,17 @@ public class AiPlayer : MonoBehaviour
 				}
 			}
 
+			//DisCard Hand at end
+			if (playmanager.GetPage() == Page.End && player.discardhand)
+			{
+				Card card = player.Hand[0];
+				player.DiscardHand(card);
+			}
 			//Call Next Page
 			Ai_NextPage();
 		}
 
-		//DisCard Hand at end
-		if (player.myturn && playmanager.GetPage() == Page.End && player.discardhand)
-		{
-			Card card = player.Hand[0];
-			player.DiscardHand(card);
-		}
+		step_on_work = false;
 	}
 
 	void Ai_NextPage()
@@ -230,25 +251,24 @@ public class AiPlayer : MonoBehaviour
 		return list;
 	}
 
-	public void SeeCardsToActivate(List<Card> cards, MonsterCard target)
+	public void SeeCardsToActivate(List<Card> cards, Card target)
 	{
-		Debug.Log("SeeCardsToActivate");
 		player.EffectAddToChain(cards[0], target);
 	}
 
 	public Card ChooseTargetCard(MagicCard card)
 	{
-		MonsterCard target = ScriptableObject.CreateInstance<MonsterCard>();
+		MonsterCard target = null;
 		foreach (MonsterCard t in player.MonsterField)
 		{
-			if (CheckTarget(card, t))
+			if (card.TargetTempCondition(t))
 			{
 				target = t; break;
 			}
 		}
 		foreach (MonsterCard t in player.enemy.MonsterField)
 		{
-			if (CheckTarget(card, t))
+			if (card.TargetTempCondition(t))
 			{
 				target = t; break;
 			}
@@ -256,38 +276,27 @@ public class AiPlayer : MonoBehaviour
 		return target;
 	}
 
+	/*
 	public bool CheckTarget(Card card, Card target)
 	{
-		if (card.NeedTarget)
+		if (card.Needtargetpos == CardPosition.MonsterField)
 		{
-			if (card.Autotarget)
-			{
-				target = card.GetAutoTarget();
-			}
-			if (target == null)
+			if (target.pos != CardPosition.MonsterField)
 			{
 				return false;
 			}
-			if (card.Needtargetpos == CardPosition.MonsterField)
-			{
-				if (target.pos != CardPosition.MonsterField)
-				{
-					return false;
-				}
-			}
-			if (card.Needtargetowner == TargetOwner.Mine)
-			{
+		}
+		if (card.Needtargetowner == TargetOwner.Mine)
+		{
 
-			}
-			if (card.Needtargettype == TargetType.Monster)
+		}
+		if (card.Needtargettype == TargetType.Monster)
+		{
+			if (target is not MonsterCard)
 			{
-				if (target is not MonsterCard)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 		return true;
-	}
-
+	}*/
 }

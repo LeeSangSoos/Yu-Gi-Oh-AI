@@ -1006,10 +1006,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DeckCardPrefab: {fileID: 3675324301562343754, guid: 9eecc25945a47cd429f164a1a4287513, type: 3}
   Decklist:
-    cards: []
+  - {fileID: 0}
   DeckParent: {fileID: 1891917836}
   ExtraDecklist:
-    cards: []
+  - {fileID: 0}
   ExtraDeckParent: {fileID: 369102044}
   cardobjects: []
   DeckSizetext: {fileID: 1611075165}
@@ -2770,7 +2770,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 2
   m_Viewport: {fileID: 1981882426}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 962987898}
@@ -2834,7 +2834,6 @@ MonoBehaviour:
   cardListPrefab: {fileID: 92989953687599383, guid: daaa10bb660174d4096045c3a279cdcb, type: 3}
   listParent: {fileID: 1351599774}
   deckEditManager: {fileID: 955142087}
-  gameManagerScript: {fileID: 0}
 --- !u!1 &2123874071
 GameObject:
   m_ObjectHideFlags: 0

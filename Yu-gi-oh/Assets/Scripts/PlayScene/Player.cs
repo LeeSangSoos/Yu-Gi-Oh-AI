@@ -214,7 +214,6 @@ public class Player : MonoBehaviour
 	}
 	public void MagicTrapEffectFromHand(Card card, int pos)
 	{
-
 		OutOfHand(card);
 		ToMagicField(card, pos, true);
 		PlayerEndWork();
@@ -222,9 +221,8 @@ public class Player : MonoBehaviour
 	}
 	public void MagicTrapEffectOnField(Card card)
 	{
-
 		PlayerOnWork();
-		if (!card.EffectCondition()) { PlayerEndWork();  return; }
+		if (!card.EffectCondition() && card is not TrapCard) { PlayerEndWork();  return; }
 		card.iscardfaceup = true;
 		int index = MagicTrapField.IndexOf(card);
 		MagicZone[index].GetComponent<Image>().sprite = card.CardImage;
@@ -235,6 +233,7 @@ public class Player : MonoBehaviour
 	#region MonsterField Fuctions
 	public void NormalSummon(Card card, int pos, int level, int cost1, int cost2)
 	{
+		Debug.Log("NormalSummon : " + card);
 		if (turnsummon <= 0 || (playmanager.GetPage() != Page.Main1 && playmanager.GetPage() != Page.Main2)) { PlayerEndWork(); return; }
 		if (level >= 7)
 		{
@@ -262,6 +261,7 @@ public class Player : MonoBehaviour
 	}
 	public void SetMonster(Card card, int pos, int level, int cost1, int cost2)
 	{
+		Debug.Log("SetSummon : " + card);
 		if (turnsummon <= 0 || (playmanager.GetPage() != Page.Main1 && playmanager.GetPage() != Page.Main2)) { PlayerEndWork(); return; }
 		if (level >= 7)
 		{
@@ -642,12 +642,14 @@ public class Player : MonoBehaviour
 		card.pos = CardPosition.MagicField;
 		if (isfaceup)
 		{
+			Debug.Log(this + " activate magic/trap : " + card);
 			MagicZone[pos].GetComponent<Image>().sprite = card.CardImage;
 			MagicZone[pos].eulerAngles = new Vector3(0, 0, 0);
 			card.iscardfaceup = isfaceup;
 		}
 		else
 		{
+			Debug.Log(this + "set magic/trap : " + card);
 			MagicZone[pos].GetComponent<Image>().sprite = backsideimage;
 			MagicZone[pos].eulerAngles = new Vector3(0, 0, 0);
 			card.iscardfaceup = isfaceup;
@@ -765,18 +767,18 @@ public class Player : MonoBehaviour
 		}
 		else
 		{
-			aiscript.SeeCardsToActivate(cardlist, recentactivatedcard as MonsterCard);
+			aiscript.SeeCardsToActivate(cardlist, recentactivatedcard);
 		}
 	}
 	public void AddChainEffect(Card card)
 	{
 		playmanager.AddChainEffect(card);
 		playmanager.AddTrigger(Trigger.EffectActivated);
+		PlayerEndWork();
 		playmanager.ChainProcess(this, card);
 	}
 	public void AddTrigger(Card card, Trigger trigger)
 	{
-		playmanager.ManagerWorkStart();
 		playmanager.AddTrigger(trigger);
 		playmanager.ChainProcess(this, card);
 	}
@@ -819,14 +821,13 @@ public class Player : MonoBehaviour
 					goodtogo = false;
 				}
 			}
-			card.targetcard = target;
 		}
 
-		if (!card.EffectCondition()) goodtogo = false;
+		if (!card.EffectCondition() || !card.TargetTempCondition(target)) goodtogo = false;
 
 		if (goodtogo)
 		{
-			PlayerEndWork();
+			card.targetcard = target;
 			AddChainEffect(card);
 		}
 		else
@@ -842,7 +843,6 @@ public class Player : MonoBehaviour
 				{
 					return;
 				}
-
 				target = aiscript.ChooseTargetCard(card as MagicCard);
 				EffectAddToChain(card, target, recursiveCount + 1);
 			}

@@ -9941,6 +9941,7 @@ MonoBehaviour:
   triggerjustactivated: 0
   WhenActivatedCard: {fileID: 0}
   IfActivatedCard: []
+  recentCards: []
   CardPrefab: {fileID: 1897042633470396748, guid: 08382f44f9507e5419db1c43bcee0cba, type: 3}
   EndPageBtn: {fileID: 1686210203}
   NoticeBoard: {fileID: 582897007}
@@ -9968,6 +9969,7 @@ MonoBehaviour:
   - {fileID: 1143562385}
   - {fileID: 791167449}
   main1toend: 0
+  ChainOnProcess: 0
   PageText: {fileID: 1275421582}
   TurnColor: {fileID: 2094616998}
   SettingPanenl: {fileID: 86393196}

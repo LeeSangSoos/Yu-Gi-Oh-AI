@@ -4,9 +4,15 @@ using System.Linq;
 public class LegendarySword : IEffect
 {
 	#region Card Effect Works Functions
-	public override bool TargetCondition(Card target)
+	public override bool TargetCondition(Card card, Card target)
 	{
-		return false;
+		if (target == null || target is not MonsterCard) return false;
+
+		MonsterCard monsterCard = target as MonsterCard;
+		if (monsterCard.monstertype == MonsterCardType.Warrior && monsterCard.iscardfaceup)
+			return true;
+		else
+			return false;
 	}
 	public override bool EffectCondition(Card card)
 	{
@@ -21,7 +27,7 @@ public class LegendarySword : IEffect
 			if (card.targetcard is MonsterCard)
 			{
 				MonsterCard monster = card.targetcard as MonsterCard;
-				return monster.monstertype == MonsterCardType.Warrior;
+				return monster.monstertype == MonsterCardType.Warrior && monster.iscardfaceup;
 			}
 			else return false;
 		}
@@ -30,7 +36,7 @@ public class LegendarySword : IEffect
 			if (card != null)
 			{
 				MonsterCard monster = card as MonsterCard;
-				return monster.monstertype == MonsterCardType.Warrior;
+				return monster.monstertype == MonsterCardType.Warrior && monster.iscardfaceup;
 			}
 			return false;
 		}) || card.owner.enemy.MonsterField.Any(card =>
@@ -38,7 +44,7 @@ public class LegendarySword : IEffect
 			if (card != null)
 			{
 				MonsterCard monster = card as MonsterCard;
-				return monster.monstertype == MonsterCardType.Warrior;
+				return monster.monstertype == MonsterCardType.Warrior && monster.iscardfaceup;
 			}
 			return false;
 		}))
