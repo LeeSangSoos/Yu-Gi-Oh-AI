@@ -40,6 +40,7 @@ class CustomEnv(Env):
 
         extracted_state = {'obs': obs, 'legal_actions': legal_action_id}
         extracted_state['raw_obs'] = state
+        
         extracted_state['raw_legal_actions'] = [a for a in state['legal_actions']]
         extracted_state['action_record'] = self.action_recorder
         return extracted_state

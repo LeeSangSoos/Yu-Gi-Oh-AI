@@ -22,7 +22,7 @@ print("Shape of action:", env.action_shape)
 agent = DQNAgent(
     num_actions=env.num_actions,
     state_shape=env.state_shape[0],
-    mlp_layers=[64,64],
+    mlp_layers=[4096,4096],
 )
 agents = [agent]
 for _ in range(1, env.num_players):

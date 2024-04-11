@@ -39,7 +39,7 @@ class Game:
             player.draw(5)
 
         # Initialize a Round
-        self.round = Round(self.np_random, self.np_random)
+        self.round = Round(self.num_players, self.np_random)
 
         # Save the hisory for stepping back to the last state.
         self.history = []
@@ -70,6 +70,16 @@ class Game:
         self.round.proceed_round(self.players, action)
         player_id = self.round.current_player_id
         state = self.get_state(player_id)
+        print('state info :')
+        print('page: ', state['page'])
+        print('hand: ', state['hand'])
+        print('deck length: ', len(state['deck']))
+        print('player_field: ', state['player_monsterfield'])
+        print('legal_actions: ', state['legal_actions'])
+        print('player_life: ', state['life'])
+        print('enemy_field: ', state['enemy_monsterfield'])
+        print('enemy_life: ', state['enemy_life'], '\n')
+        
         return state, player_id
 
     def step_back(self):
@@ -129,8 +139,8 @@ class Game:
     @staticmethod
     def get_num_actions():
 
-      return 3200
-
+      return 3180
+      
     def get_player_id(self):
         ''' Return the current player's id
 

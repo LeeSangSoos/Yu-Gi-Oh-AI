@@ -2,6 +2,7 @@ from rlcard.games.custom.card import Monster
 from rlcard.games.custom.card import Card
 from rlcard.games.custom.utils import cards2list
 import random
+import numpy as np
 
 class Round:
     page_names = ['Draw', 'Main', 'Battle', 'End']
@@ -20,8 +21,8 @@ class Round:
         
         self.page_index = 1 #시작은 main
         self.page = self.page_names[self.page_index]
-        self.first_turn = True
         self.current_turn = self.current_player_id
+        self.first_turn = True
 
     def proceed_round(self, players, action):
         action_values = action.split("-")
@@ -29,8 +30,7 @@ class Round:
         enemy = players[1 - self.current_player_id]
         if action_values[0] == 'draw':
             self._perform_draw_action(players, self.current_player_id, 1)
-            return
-        if action_values[0] == 'endpage':
+        elif action_values[0] == 'endpage':
             self.change_page(1)
             if self.page == 'Draw':
                 player = players[self.current_player_id]
@@ -39,28 +39,26 @@ class Round:
                 for monster in player.monsterfield:
                     if isinstance(monster, Monster):
                         monster.atk_chance = 1
-            return
-        if action_values[0] == 'summon':
+        elif action_values[0] == 'summon':
             if action_values[1] == '0':
                 self.normal_summon(0, player, int(action_values[2]))
             elif action_values[1] == '1':
                 self.normal_summon(1, player, int(action_values[2]), int(action_values[3]))
             elif action_values[1] == '2':
                 self.normal_summon(2, player, int(action_values[2]), int(action_values[3]), int(action_values[4]))
-            return
-        if action_values[0] == 'attack':
+        elif action_values[0] == 'attack':
             if action_values[2] == 'direct':
                 self. battle(player, enemy, int(action_values[1]))
-            self. battle(player, enemy, int(action_values[1]), int(action_values[2]))
-            return
-        if action_values[0] == 'discard':
+            else:
+                self. battle(player, enemy, int(action_values[1]), int(action_values[2]))
+        elif action_values[0] == 'discard':
             for i in range(len(player.hand)):
                 if player.hand[i].id == int(action_values[1]):
                     player.hand.pop(i)
                     break
             
     def get_legal_actions(self, players, player_id):
-        legal_actions = []
+        legal_actions = set()
         opponent = players[1 - player_id]
         player = players[player_id]
         hand = players[player_id].hand
@@ -70,62 +68,62 @@ class Round:
         if self.current_turn == player_id:
             if self.page == "Draw":
                 if player.turn_draw >= 1:
-                    legal_actions.append(f"draw")
+                    legal_actions.add("draw")
                 else:
-                    legal_actions.append(f"endpage")
+                    legal_actions.add("endpage")
 
             elif self.page == "Main":
-                num_monsters = 0 #필드의 이미 존재하는 몬스터 수 계산
-                used_places = [] #사용중인 공간 좌표들
-                for i in range(len(player_monsterfield)): #사용중인 공간들 계산
+                used_places = set()
+                for i in range(len(player_monsterfield)):
                     if player_monsterfield[i] is not None:
-                        num_monsters += 1
-                        used_places.append(i)
-                #소환 가능횟수가 1 이상일 때 소환가능한 경우의 수들 추가
+                        used_places.add(i)
                 if player.turn_summon >= 1:
                     for i in range(len(hand)):
                         card = hand[i]
-                        if isinstance(card, Monster):
+                        if isinstance(card, Monster) and card is not None:
                             monster = card
-                            if monster.level <= 4 and num_monsters < 5:
-                                legal_actions.append(f"summon-0-{monster.id}")
-                            elif monster.level <= 6 and num_monsters >= 1:
+                            if monster.level <= 4 and len(used_places) < 5:
+                                legal_actions.add(f"summon-0-{monster.id}")
+                            elif monster.level <= 6 and len(used_places) >= 1:
                                 for sacrifice_idx in used_places:
                                     sacrifice = player.monsterfield[sacrifice_idx]
-                                    legal_actions.append(f"summon-1-{monster.id}-{sacrifice.id}")                            
-                            elif monster.level >= 7 and num_monsters >= 2:
+                                    legal_actions.add(f"summon-1-{monster.id}-{sacrifice.id}")
+                            elif monster.level >= 7 and len(used_places) >= 2:
                                 for sacrifice_idx1 in used_places:
                                     sacrifice1 = player.monsterfield[sacrifice_idx1]
                                     for sacrifice_idx2 in used_places:
                                         if sacrifice_idx2 != sacrifice_idx1:
                                             sacrifice2 = player.monsterfield[sacrifice_idx2]
-                                            legal_actions.append(f"summon-2-{monster.id}-{sacrifice1.id}-{sacrifice2.id}")
+                                            legal_actions.add(f"summon-2-{monster.id}-{sacrifice1.id}-{sacrifice2.id}")
 
             elif self.page == "Battle":
-                for i in range(len(player_monsterfield)):
-                    card = player_monsterfield[i]
-                    if isinstance(card, Monster):
-                        monster = card
-                        if monster.atk_chance >=1 :
-                            for j in range(len(opponent_monsterfield)):
-                                enemy = opponent_monsterfield[j]
-                                if isinstance(enemy, Monster):
-                                    legal_actions.append(f"attack-{monster.id}-{enemy.id}")
-                            if len(opponent_monsterfield) == 0:
-                                legal_actions.append(f"attack-{monster.id}-direct")
-                            break
-                            
+                if not self.first_turn:
+                    for i in range(len(player_monsterfield)):
+                        if player_monsterfield[i] is not None:
+                            card = player_monsterfield[i]
+                            if isinstance(card, Monster):
+                                monster = card
+                                if monster.atk_chance >= 1:
+                                    for j in range(len(opponent_monsterfield)):
+                                        if opponent_monsterfield[j] is not None:
+                                            enemy = opponent_monsterfield[j]
+                                            if isinstance(enemy, Monster):
+                                                legal_actions.add(f"attack-{monster.id}-{enemy.id}")
+                                        if all(card is None for card in opponent_monsterfield):
+                                            legal_actions.add(f"attack-{monster.id}-direct")
+                                        break
             elif self.page == "End":
                 if len(hand) >= 7:
                     for card in hand:
-                        if isinstance(card, Monster):
-                            legal_actions.append(f"discard-{card.id}")
+                        if card is not None:
+                            legal_actions.add(f"discard-{card.id}")
                 else:
-                    legal_actions.append(f"endpage")
+                    legal_actions.add("endpage")
 
         if self.page == "Main" or self.page == "Battle":
-            legal_actions.append(f"endpage")
-        return legal_actions
+            legal_actions.add("endpage")
+        return list(legal_actions) 
+
 
     def get_state(self, players, player_id):
         ''' Get player's state
@@ -159,8 +157,11 @@ class Round:
                 player.turn_draw -= 1
     
     def battle(self, player, enemy, attacker_id, enemy_id = -1):
+        player_life1 = player.life
+        enemy_life1 = enemy.life
+
         for i in range(len(player.monsterfield)):
-            if player.monsterfield[i] != None:
+            if player.monsterfield[i] is not None:
                 if player.monsterfield[i].id == attacker_id:
                     attacker_idx = i
                     break
@@ -170,7 +171,7 @@ class Round:
             enemy.life -= attacker.atk
         else:
             for i in range(len(enemy.monsterfield)):
-                if enemy.monsterfield[i] != None:
+                if enemy.monsterfield[i] is not None:
                     if enemy.monsterfield[i].id == enemy_id:
                         enemy_idx = i
                         break
@@ -192,8 +193,10 @@ class Round:
         elif player.life <=0:
             self.is_over = True
             self.winner = enemy.get_player_id()
-        
         attacker.atk_chance -= 1
+        '''
+        print(player.player_id, " : ", player.life, " ", enemy.player_id, " : ", enemy.life)
+        '''
 
     def change_page(self, increment):
         self.page_index += increment
@@ -202,6 +205,9 @@ class Round:
             self.current_turn = self.current_player_id
             self.page_index = 0
         self.page = self.page_names[self.page_index]
+
+        if self.first_turn == True and self.page == "Draw":
+            self.first_turn = False
     
     def normal_summon(self, type, player, hand_id, sacrifice_id1 = -1, sacrifice_id2 = -1):
         '''
@@ -216,14 +222,14 @@ class Round:
 
         if type == 1 or type == 2:
             for i in range(len(player.monsterfield)):
-                if player.monsterfield[i] != None:
+                if player.monsterfield[i] is not None:
                     if player.monsterfield[i].id == sacrifice_id1:
                         sacrifice_idx1 = i
                         break
             player.monsterfield[sacrifice_idx1] = None
         if type == 2:
             for i in range(len(player.monsterfield)):
-                if player.monsterfield[i] != None:
+                if player.monsterfield[i] is not None:
                     if player.monsterfield[i].id == sacrifice_id2:
                         sacrifice_idx2 = i
                         break

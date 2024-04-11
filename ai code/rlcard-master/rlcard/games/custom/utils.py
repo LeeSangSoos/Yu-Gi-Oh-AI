@@ -1,6 +1,7 @@
 import os
 import json
 import numpy as np
+from collections import OrderedDict
 
 import rlcard
 
@@ -9,36 +10,10 @@ from rlcard.games.custom.card import Card, Monster
 #set path to rlcard
 ROOT_PATH = rlcard.__path__[0]
 
-#ACTION 매핑
-ACTION_SPACE = {}
-action_num = 0
-
-def get_action_num() : 
-    global action_num
-    j = action_num
-    action_num += 1
-    return j
-
-ACTION_SPACE["draw"] =  get_action_num()
-
-for hand_id in range(14):
-    ACTION_SPACE[f"summon-0-{hand_id}"] = get_action_num()
-    for field_id1 in range(14):
-        ACTION_SPACE[f"summon-1-{hand_id}-{field_id1}"] = get_action_num()
-        for field_id2 in range(14):
-            ACTION_SPACE[f"summon-2-{hand_id}-{field_id1}-{field_id2}"] = get_action_num()
-
-for field_id in range(14):
-    for enemy_id in range(14):
-        ACTION_SPACE[f"attack-{field_id}-{enemy_id}"] = get_action_num()
-    ACTION_SPACE[f"attack-{field_id}-direct"] = get_action_num()
-
-for hand_id in range(14):
-    ACTION_SPACE[f"discard-{hand_id}"] = get_action_num()
-
-ACTION_SPACE[f"endpage"] = get_action_num()
-
-ACTION_LIST = list(ACTION_SPACE.keys())
+# a map of abstract action to its index and a list of abstract action
+with open(os.path.join(ROOT_PATH, 'games/custom/jsondata/action_space.json'), 'r') as file:
+    ACTION_SPACE = json.load(file, object_pairs_hook=OrderedDict)
+    ACTION_LIST = list(ACTION_SPACE.keys())
 
 #create deck from card data json files
 #get cards from json and add them to deck by *3
@@ -110,8 +85,11 @@ def encode_hand(plane, hand):
     '''
     plane = np.zeros((14), dtype=int)
     hand = card2dict(hand)
+    
     for card, count in hand.items():
-        plane[card] = count
+        card_info = card.split('-')
+        card_id = int(card_info[0])
+        plane[card_id] = count
     return plane
 
 def encode_field(plane, field):
@@ -128,7 +106,9 @@ def encode_field(plane, field):
     plane = np.zeros((14), dtype=int)
     field = card2dict(field)
     for card, count in field.items():
-        plane[card] = count
+        card_info = card.split('-')
+        card_id = int(card_info[0])
+        plane[card_id] = count
     return plane
 
 def encode_life(plane, life):

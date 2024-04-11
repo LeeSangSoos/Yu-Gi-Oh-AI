@@ -16,9 +16,9 @@ class Card:
         ''' Get the string representation of card
 
         Return:
-            (int): The int of card's color and trait
+            (string): The string of card's
         '''
-        return self.id
+        return str(self.id) + '-' + self.name + '-' + self.ingame_id
 
     @staticmethod
     def print_cards(cards):

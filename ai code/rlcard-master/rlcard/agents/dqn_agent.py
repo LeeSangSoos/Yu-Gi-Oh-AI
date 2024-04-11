@@ -25,7 +25,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import os
 import random
 import numpy as np
 import torch
@@ -268,20 +267,17 @@ class DQNAgent(object):
             'memory': self.memory.checkpoint_attributes(),
             'total_t': self.total_t,
             'train_t': self.train_t,
-            'replay_memory_init_size': self.replay_memory_init_size,
-            'update_target_estimator_every': self.update_target_estimator_every,
-            'discount_factor': self.discount_factor,
             'epsilon_start': self.epsilons.min(),
             'epsilon_end': self.epsilons.max(),
             'epsilon_decay_steps': self.epsilon_decay_steps,
+            'discount_factor': self.discount_factor,
+            'update_target_estimator_every': self.update_target_estimator_every,
             'batch_size': self.batch_size,
             'num_actions': self.num_actions,
             'train_every': self.train_every,
-            'device': self.device,
-            'save_path': self.save_path,
-            'save_every': self.save_every
+            'device': self.device
         }
-
+        
     @classmethod
     def from_checkpoint(cls, checkpoint):
         '''
@@ -294,7 +290,6 @@ class DQNAgent(object):
         print("\nINFO - Restoring model from checkpoint...")
         agent_instance = cls(
             replay_memory_size=checkpoint['memory']['memory_size'],
-            replay_memory_init_size=checkpoint['replay_memory_init_size'],
             update_target_estimator_every=checkpoint['update_target_estimator_every'],
             discount_factor=checkpoint['discount_factor'],
             epsilon_start=checkpoint['epsilon_start'],
@@ -302,13 +297,10 @@ class DQNAgent(object):
             epsilon_decay_steps=checkpoint['epsilon_decay_steps'],
             batch_size=checkpoint['batch_size'],
             num_actions=checkpoint['num_actions'], 
+            device=checkpoint['device'], 
             state_shape=checkpoint['q_estimator']['state_shape'],
-            train_every=checkpoint['train_every'],
             mlp_layers=checkpoint['q_estimator']['mlp_layers'],
-            learning_rate=checkpoint['q_estimator']['learning_rate'],
-            device=checkpoint['device'],
-            save_path=checkpoint['save_path'],
-            save_every=checkpoint['save_every'],
+            train_every=checkpoint['train_every']
         )
         
         agent_instance.total_t = checkpoint['total_t']
@@ -317,7 +309,8 @@ class DQNAgent(object):
         agent_instance.q_estimator = Estimator.from_checkpoint(checkpoint['q_estimator'])
         agent_instance.target_estimator = deepcopy(agent_instance.q_estimator)
         agent_instance.memory = Memory.from_checkpoint(checkpoint['memory'])
-
+        
+        
         return agent_instance
                      
     def save_checkpoint(self, path, filename='checkpoint_dqn.pt'):
@@ -325,11 +318,9 @@ class DQNAgent(object):
 
         Args:
             path (str): the path to save the model
-            filename(str): the file name of checkpoint
         '''
-        torch.save(self.checkpoint_attributes(), os.path.join(path, filename))
-
-
+        torch.save(self.checkpoint_attributes(), path + '/' + filename)
+        
 class Estimator(object):
     '''
     Approximate clone of rlcard.agents.dqn_agent.Estimator that
