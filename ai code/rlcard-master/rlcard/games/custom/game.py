@@ -70,6 +70,7 @@ class Game:
         self.round.proceed_round(self.players, action)
         player_id = self.round.current_player_id
         state = self.get_state(player_id)
+        '''
         print('state info :')
         print('page: ', state['page'])
         print('hand: ', state['hand'])
@@ -79,7 +80,7 @@ class Game:
         print('player_life: ', state['life'])
         print('enemy_field: ', state['enemy_monsterfield'])
         print('enemy_life: ', state['enemy_life'], '\n')
-        
+        '''
         return state, player_id
 
     def step_back(self):
@@ -139,7 +140,7 @@ class Game:
     @staticmethod
     def get_num_actions():
 
-      return 3180
+      return 473
       
     def get_player_id(self):
         ''' Return the current player's id

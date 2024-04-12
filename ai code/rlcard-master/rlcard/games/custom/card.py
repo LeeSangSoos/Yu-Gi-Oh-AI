@@ -1,4 +1,3 @@
-
 class Card:
     info = {'type':  ['monster', 'magic', 'trap']
             }
@@ -8,6 +7,7 @@ class Card:
         self.name = card_name
         self.id = card_id
         self.ingame_id = "0"
+        self.faceup = True
     
     def set_ingame_id(self, id):
         self.ingame_id = id
@@ -18,7 +18,7 @@ class Card:
         Return:
             (string): The string of card's
         '''
-        return str(self.id) + '-' + self.name + '-' + self.ingame_id
+        return str(self.id) + '-' + str(self.faceup)
 
     @staticmethod
     def print_cards(cards):
@@ -33,15 +33,18 @@ class Card:
 
 class Monster(Card):
 
-    def __init__(self, card_id, card_name, atk, defence, level):
+    def __init__(self, card_id, card_name, atk, defense, level):
         super().__init__('monster', card_id, card_name)
         self.atk = atk
-        self.defence = defence
+        self.defense = defense
         self.level = level
         self.atk_chance = 1
         self.info = super().info.copy()
         self.info.update({
             'atk': atk,
-            'def': defence,
+            'def': defense,
             'level': level,
         })
+    
+    def get_str(self):
+        return str(self.id) + '-' + str(self.faceup) + '-' + str(self.atk) + '-' + str(self.defense)

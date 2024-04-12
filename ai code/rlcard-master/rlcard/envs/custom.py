@@ -21,18 +21,18 @@ class CustomEnv(Env):
         self.default_game_config = DEFAULT_GAME_CONFIG
         self.game = Game()
         super().__init__(config)
-        # (hand 0, field 1, life 2, enemy_field 3, enemy_life 4, page 5)*(14 kinds of cards) (0~3 cards)
+        # (hand 0, field 1, enemy_field 2, life 3, enemy_life 4, page 5)*(7 cards at most)*(id 0, faceup 1, atk 2, def 3)
         # life = 8000~0, page = 0~3
-        self.state_shape = [[6, 14] for _ in range(self.num_players)]
+        self.state_shape = [[6, 7, 4] for _ in range(self.num_players)]
         self.action_shape = [None for _ in range(self.num_players)]
 
     def _extract_state(self, state):
-        obs = np.zeros((6, 14), dtype=int)
+        obs = np.zeros((6, 7, 4), dtype=int)
 
         encode_hand(obs[0], state['hand'])
         encode_field(obs[1], state['player_monsterfield'])
-        encode_life(obs[2], state['life'])
-        encode_field(obs[3], state['enemy_monsterfield'])
+        encode_field(obs[2], state['enemy_monsterfield'])
+        encode_life(obs[3], state['life'])
         encode_life(obs[4], state['enemy_life'])
         encode_page(obs[5], state['page'])
         

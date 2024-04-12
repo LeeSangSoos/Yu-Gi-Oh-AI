@@ -73,73 +73,56 @@ def draw_card(player, num=1):
             # need loose condition
             break
 
-def encode_hand(plane, hand): 
+def encode_hand(plane, hand):
     ''' Encode hand and represerve it into plane
 
     Args:
-        plane (array): 14 numpy array
+        plane (array): 7*4 numpy array
         hand (list): list of string of hand's card
 
     Returns:
-        (array): 14 numpy array
+        (array): 7*4 numpy array
     '''
-    plane = np.zeros((14), dtype=int)
-    hand = card2dict(hand)
+    #hand = card2dict(hand)
     
-    for card, count in hand.items():
+    for hand_idx in range(len(hand)):
+        card = hand[hand_idx]
         card_info = card.split('-')
         card_id = int(card_info[0])
-        plane[card_id] = count
+        faceup = bool(card_info[1])
+        atk = int(card_info[2])
+        defence = int(card_info[3])
+        plane[hand_idx][0] = card_id
+        plane[hand_idx][1] = faceup
+        plane[hand_idx][2] = atk
+        plane[hand_idx][3] = defence
     return plane
 
 def encode_field(plane, field):
-    ''' Encode field and represerve it into plane
-
-    Args:
-        plane (array): 14 numpy array
-        field (list): list of string of field's card
-
-    Returns:
-        (array): 14 numpy array
-    '''
-    # plane = np.zeros((14), dtype=int)
-    plane = np.zeros((14), dtype=int)
-    field = card2dict(field)
-    for card, count in field.items():
+    for field_idx in range(len(field)):
+        card = field[field_idx]
         card_info = card.split('-')
         card_id = int(card_info[0])
-        plane[card_id] = count
+        faceup = bool(card_info[1])
+        atk = int(card_info[2])
+        defence = int(card_info[3])
+        plane[field_idx][0] = card_id
+        plane[field_idx][1] = faceup
+        plane[field_idx][2] = atk
+        plane[field_idx][3] = defence
     return plane
 
 def encode_life(plane, life):
-    ''' Encode hand and represerve it into plane
-
-    Args:
-        plane (array): 14 numpy array
-        life (int): int value of life point of player
-
-    Returns:
-        (array): 14 numpy array
-    '''
-    plane[0] = life
+    plane[0][0] = life
     return plane
 
 def encode_page(plane, page):
-    ''' Encode page and represerve it into plane
-
-    Args:
-        plane (array): 14 numpy array
-        page (str): str value of page
-
-    Returns:
-        (array): 14 numpy array
-    '''
     if page == 'Draw':
-        plane[0] = 0
+        plane[0][0] = 0
     elif page == 'Main':
-        plane[0] = 1
+        plane[0][0] = 1
     elif page == 'Battle':
-        plane[0] = 2
+        plane[0][0] = 2
     elif page == 'End':
-        plane[0] = 3
+        plane[0][0] = 3
     return plane
