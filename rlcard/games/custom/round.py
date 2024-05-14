@@ -100,14 +100,14 @@ class Round:
                             if isinstance(card, Monster):
                                 monster = card
                                 if monster.atk_chance >= 1 and monster.faceup:
-                                    for enemy_field_idx in range(len(opponent_monsterfield)):
-                                        if opponent_monsterfield[enemy_field_idx] is not None:
-                                            enemy = opponent_monsterfield[enemy_field_idx]
-                                            if isinstance(enemy, Monster):
-                                                legal_actions.add(f"attack-{player_field_idx}-{enemy_field_idx}")
-                                        if all(card is None for card in opponent_monsterfield):
-                                            legal_actions.add(f"attack-{player_field_idx}-direct")
-                                        break
+                                    if all(card is None for card in opponent_monsterfield):
+                                        legal_actions.add(f"attack-{player_field_idx}-direct")
+                                    else:
+                                        for enemy_field_idx in range(len(opponent_monsterfield)):
+                                            if opponent_monsterfield[enemy_field_idx] is not None:
+                                                enemy = opponent_monsterfield[enemy_field_idx]
+                                                if isinstance(enemy, Monster):
+                                                    legal_actions.add(f"attack-{player_field_idx}-{enemy_field_idx}")
             elif self.page == "End":
                 if len(hand) >= 7:
                     for hand_idx in range(len(hand)):
@@ -145,6 +145,7 @@ class Round:
         player = players[player_id]
         for _ in range(n):
             if not player.deck:
+                #print('Is Over')
                 self.is_over = True
                 self.winner = 1-player_id
                 break
@@ -179,9 +180,11 @@ class Round:
                     player.life -= (defender.defense - attacker.atk)
             
         if enemy.life <= 0:
+            #print('Is Over')
             self.is_over = True
             self.winner = player.get_player_id()
         elif player.life <=0:
+            #print('Is Over')
             self.is_over = True
             self.winner = enemy.get_player_id()
         attacker.atk_chance -= 1

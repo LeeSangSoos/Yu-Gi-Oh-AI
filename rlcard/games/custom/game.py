@@ -67,20 +67,12 @@ class Game:
             his_players = deepcopy(self.players)
             self.history.append((his_players, his_round))
 
+        #print('Procced round:')
+        #print('Action:', action)
         self.round.proceed_round(self.players, action)
         player_id = self.round.current_player_id
         state = self.get_state(player_id)
-        '''
-        print('state info :')
-        print('page: ', state['page'])
-        print('hand: ', state['hand'])
-        print('deck length: ', len(state['deck']))
-        print('player_field: ', state['player_monsterfield'])
-        print('legal_actions: ', state['legal_actions'])
-        print('player_life: ', state['life'])
-        print('enemy_field: ', state['enemy_monsterfield'])
-        print('enemy_life: ', state['enemy_life'], '\n')
-        '''
+
         return state, player_id
 
     def step_back(self):
@@ -92,6 +84,7 @@ class Game:
         if not self.history:
             return False
         self.players, self.round = self.history.pop()
+        #print("Step Back : ")
         return True
 
     def get_state(self, player_id):
@@ -106,6 +99,18 @@ class Game:
         state = self.round.get_state(self.players, player_id)
         state['num_players'] = self.get_num_players()
         state['current_player'] = self.round.current_player_id
+        '''
+        print("State: ")
+        print('Current Player:', state['current_player'])
+        print('page:', state['page'])
+        print('hand:', state['hand'])
+        print('deck length:', len(state['deck']))
+        print('player_field:', state['player_monsterfield'])
+        print('player_life:', state['life'])
+        print('enemy_field:', state['enemy_monsterfield'])
+        print('enemy_life:', state['enemy_life'])
+        print('legal_actions:', state['legal_actions'], '\n')
+        '''
         return state
 
     def get_payoffs(self):
