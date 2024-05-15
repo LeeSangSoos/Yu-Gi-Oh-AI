@@ -128,7 +128,7 @@ class Round:
             player_id (int): The id of the player
         '''
         state = {}
-        player = players[player_id]
+        player = players[player_id] 
         enemy = players[1 - player_id]
         state['hand'] = cards2list(player.hand) ## card id list
         state['deck'] = cards2list(player.deck)

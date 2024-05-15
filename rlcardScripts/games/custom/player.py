@@ -29,3 +29,13 @@ class Player:
     def draw(self, n):
         for i in range(n):
             self.hand.append(self.deck.pop())
+
+    def setVariables(self, player_id, hand=None, monsterfield=None, life=8000, turn_draw=1, turn_summon=1, deck=None):
+        self.player_id = player_id
+        self.hand = hand
+        self.monsterfield = monsterfield
+        self.life = life
+        self.turn_draw = turn_draw
+        self.turn_summon = turn_summon
+        self.deck = deck
+        
