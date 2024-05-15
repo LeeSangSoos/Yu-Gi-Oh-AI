@@ -835,7 +835,7 @@ ScriptsOnlyBuild:
     className: UnityOnCollisionExit2DMessageListener
   - hash:
       serializedVersion: 2
-      Hash: dc851362a6712913da5abe608574a64b
+      Hash: 028d06ecc1e0ce64723d4c695792909d
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Card
@@ -931,7 +931,7 @@ ScriptsOnlyBuild:
     className: UnityOnJointBreak2DMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 2a0c2af0ad59be2d33ff2eeb7a1ebb27
+      Hash: 454700af13afe93df87210478f10e536
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: MonsterCard
@@ -1087,7 +1087,7 @@ ScriptsOnlyBuild:
     className: HorizontalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 6cff6e25b4a3d3b20688e7cefd47d93c
+      Hash: d24efcbe0a3191e8a2275810cdc29af1
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: TrapCard
@@ -1387,7 +1387,7 @@ ScriptsOnlyBuild:
     className: UnityOnMoveMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 3d9d07d9ab6d1c848981dbc1d4a24041
+      Hash: d110c940ef96d85a32465bb27dfe6159
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: MagicCard
@@ -1540,4 +1540,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/MenuScene.unity
   - Assets/Scenes/DeckEditScene.unity
   - Assets/Scenes/PlayScene.unity
-  playerPath: C:/Users/proto/Desktop/Yugi_AI/Yu-Gi-Oh-AI/Yu-gi-oh/Build/Yu-gi-oh.exe
+  playerPath: C:/Users/proto/Desktop/Yugi_AI/Yu-gi-oh.exe

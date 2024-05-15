@@ -113,7 +113,6 @@ public static class JsonSaveLoad
 
 		return ExtraDeck;
 	}
-
 	public static Card CreateCardInstance(Card originalCard)
 	{
 		if (originalCard is MonsterCard)

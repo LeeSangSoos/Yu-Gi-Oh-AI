@@ -181,7 +181,9 @@ public class Player : MonoBehaviour
 	#region hand functions
 	public void draw()
 	{
-		if (maindeck.Count == 0) { Debug.Log("No Deck left for player :" + GetPlayerType().ToString()); }
+		if (maindeck.Count == 0) { Debug.Log("No Deck left for player :" + GetPlayerType().ToString());
+			playmanager.GameOverForPlayer();
+		}
 		else
 		{
 			ToHand(maindeck[0]);
@@ -248,7 +250,7 @@ public class Player : MonoBehaviour
 		{
 			if (monsterfield[cost1] == null) { PlayerEndWork(); return; }
 			if (monsterfield[pos] != null && pos != cost1) { PlayerEndWork(); return; }
-			Card sacrifice1 = OutOfMonsterField(cost2);
+			Card sacrifice1 = OutOfMonsterField(cost1);
 			ToGrave(sacrifice1);
 		}
 		if (monsterfield[pos] != null) { PlayerEndWork(); return; }
@@ -337,10 +339,10 @@ public class Player : MonoBehaviour
 					LifePointDown(enemycard.def - playercard.atk);
 				}
 			}
-			playercard.attackchance--;
-			playercard.changebattlepos--;
-			PlayerEndWork();
 		}
+		playercard.changebattlepos--;
+		playercard.attackchance--;
+		PlayerEndWork();
 	}
 	public void DirectAttack(Card attackcard)
 	{
@@ -350,17 +352,18 @@ public class Player : MonoBehaviour
 		{
 			PlayerOnWork();
 			enemy.LifePointDown(playercard.atk);
-			playercard.attackchance--;
-			playercard.changebattlepos--;
-			PlayerEndWork();
 		}
+		playercard.attackchance--;
+		playercard.changebattlepos--;
+		PlayerEndWork();
 	}
 	public void ReverseMonster(Card card)
 	{
 		if (card.iscardfaceup) { return; }
 		int index = card.owner.MonsterField.IndexOf(card);
 		card.owner.MonsterZone[index].GetComponent<Image>().sprite = card.CardImage;
-		card.iscardfaceup = true;
+		//card.iscardfaceup = true;
+		card.iscardfaceup = false;
 	}
 	public void ChangeBattlePosition(Card card)
 	{
@@ -787,7 +790,6 @@ public class Player : MonoBehaviour
 		playmanager.ChainProcess2(this, playmanager.WhenActivatedCard);
 	}
 	private const int MaxRecursiveCalls = 10;
-
 	public void EffectAddToChain(Card card, Card target, int recursiveCount = 0)
 	{
 		PlayerOnWork();

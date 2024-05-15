@@ -1,16 +1,22 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 
 public class PlayManagerScript : MonoBehaviour
 {
 	#region values
 	//Turn & pages
 	Turn turn;
-	int TotalTurn = 1;
+	public int TotalTurn = 1;
 	Page gamepage;
 	PageTime pageTime = PageTime.Start;
 	public Text turntext;
@@ -45,12 +51,18 @@ public class PlayManagerScript : MonoBehaviour
 	//Boolean values
 	public bool main1toend = false;
 	public bool ChainOnProcess = false;
+
+	public int Single2Ai = 1;
 	#endregion
 	#region Getter & Setter
-	public void ManagerWorkStart() { //Debug.Log("Manager work on"); 
-		managerworkleft = true; }
-	public void ManagerWorkEnd() { //Debug.Log("Manager work End"); 
-		managerworkleft = false; }
+	public void ManagerWorkStart()
+	{ //Debug.Log("Manager work on"); 
+		managerworkleft = true;
+	}
+	public void ManagerWorkEnd()
+	{ //Debug.Log("Manager work End"); 
+		managerworkleft = false;
+	}
 	#endregion
 	#region TimeFunctions
 	private void Awake()
@@ -99,6 +111,14 @@ public class PlayManagerScript : MonoBehaviour
 		turntext.text = "Turn: " + TotalTurn;
 		#endregion
 		#region Game start
+		//Save if game is over in file for python
+		JsonPair<string, bool> isOver = new JsonPair<string, bool>();
+		isOver.Key = "IsOver";
+		isOver.Value = false;
+		string json = JsonUtility.ToJson(isOver);
+		string filePath = Path.Combine(Application.persistentDataPath, "IsOver.json");
+		File.WriteAllText(filePath, json);
+
 		player.SetTurnActions();
 		gamepage = Page.Draw;
 
@@ -108,6 +128,20 @@ public class PlayManagerScript : MonoBehaviour
 			player_12.draw();
 		}
 		player.enemy.draw();
+
+		//Save players Data
+		SavePlayer(player_6, "DqnPlayer.json");
+		SavePlayer(player_12, "HumanPlayer.json");
+
+		//Save Data for Ai
+		bool isFirstTurn = true;
+		json = JsonConvert.SerializeObject(isFirstTurn);
+		filePath = Path.Combine(Application.persistentDataPath, "isFirstTurn.json");
+		File.WriteAllText(filePath, json);
+
+		SavePage();
+
+		//Start Game
 		pageTime = PageTime.Start;
 		#endregion
 	}
@@ -198,14 +232,13 @@ public class PlayManagerScript : MonoBehaviour
 	{
 		return TotalTurn;
 	}
-
 	public bool IsWorkLeft()
 	{
 		return player_6.WorkLeft || player_12.WorkLeft || managerworkleft;
 	}
 	public bool SomeoneWorking()
 	{
-		return player_6.GetIsWorking()|| player_12.GetIsWorking() || managerworkleft;
+		return player_6.GetIsWorking() || player_12.GetIsWorking() || managerworkleft;
 	}
 
 	int cardnum = 0;
@@ -242,11 +275,23 @@ public class PlayManagerScript : MonoBehaviour
 			CardsInGame.Add(card);
 		}
 	}
-	void GameOver(Player winner)
+	public void GameOver(Player winner)
 	{
+		//Save if game is over in file for python
+		JsonPair<string, bool> isOver = new JsonPair<string, bool>();
+		isOver.Key = "IsOver";
+		isOver.Value = true;
+		string json = JsonUtility.ToJson(isOver);
+		string filePath = Path.Combine(Application.persistentDataPath, "IsOver.json");
+		File.WriteAllText(filePath, json);
+
 		NoticeBoard.SetActive(true);
 		NoticeBoard.GetComponentInChildren<Text>().text = ("Game Over : " + winner.name + " Won!");
 		OpenSetting();
+	}
+	public void GameOverForPlayer()
+	{
+		GameOver(player);
 	}
 	#endregion
 	#region PageActions
@@ -262,18 +307,22 @@ public class PlayManagerScript : MonoBehaviour
 				gamepage = Page.Standby;
 				break;
 			case Page.Standby:
+				SavePage();
 				gamepage = Page.Main1;
 				EndPageBtn.SetActive(true);
 				break;
 			case Page.Main1:
+				SavePage();
 				if (TotalTurn == 1 || main1toend) { gamepage = Page.End; main1toend = false; }
 				else gamepage = Page.Battle;
 				EndPageBtn.SetActive(false);
 				break;
 			case Page.Battle:
+				SavePage();
 				gamepage = Page.Main2;
 				break;
 			case Page.Main2:
+				SavePage();
 				gamepage = Page.End;
 				break;
 			case Page.End:
@@ -283,6 +332,16 @@ public class PlayManagerScript : MonoBehaviour
 				player.myturn = true;
 				player.SetTurnActions();
 				TurnColor.color = turn == Turn.Six ? Constant.mycolor : Constant.aicolor;
+
+				// 첫번째 턴 정보 저장
+				if (TotalTurn == 1)
+				{
+					bool isFirstTurn = false;
+					string json = JsonConvert.SerializeObject(isFirstTurn);
+					string filePath = Path.Combine(Application.persistentDataPath, "isFirstTurn.json");
+					File.WriteAllText(filePath, json);
+				}
+
 				TotalTurn++;
 				gamepage = Page.Draw;
 				turntext.text = "Turn: " + TotalTurn;
@@ -345,7 +404,69 @@ public class PlayManagerScript : MonoBehaviour
 
 	#endregion
 	#region Function for Ai
+	public void SavePlayer(Player player, string fileName)
+	{
+		JsonDictionary<string, object> playerData = new JsonDictionary<string, object>();
 
+		// player id
+		int playerId = player.GetPlayerType() == PlayerType.User ? 0 : 1;
+		playerData.Dictionary.Add("playerId", playerId);
+
+		// player hand
+		JsonList<JsonDictionary<string, object>> playerHand = Utils.CardList2JsonList(player.Hand);
+		playerData.Dictionary.Add("playerHand", playerHand);
+
+		// player monsterField
+		JsonList<JsonDictionary<string, object>> playerMonsterField = Utils.CardList2JsonList(player.MonsterField);
+		playerData.Dictionary.Add("playerMonsterField", playerMonsterField);
+
+		// player life
+		playerData.Dictionary.Add("playerLife", player.LifePoint);
+
+		// player turnDrawLimit
+		playerData.Dictionary.Add("playerDraw", player.turndraw);
+
+		// player turnSummonLimit
+		playerData.Dictionary.Add("playerTurnSummon", player.turnsummon);
+
+		// player deck
+		JsonList<JsonDictionary<string, object>> playerDeck = Utils.CardList2JsonList(player.MainDeck);
+		playerData.Dictionary.Add("playerDeck", playerDeck);
+
+		// Save player data
+		string json = playerData.ToJson();
+		string filePath = Path.Combine(Application.persistentDataPath, fileName);
+		JsonFileHandler.SaveToJsonFile(filePath, json);
+	}
+	public void SavePage()
+	{
+		string value = "";
+		switch (gamepage)
+		{
+			case Page.Standby:
+				value = "Main1";
+				break;
+			case Page.Main1:
+				value = "Battle";
+				break;
+			case Page.Battle:
+				value = "End";
+				break;
+			case Page.Main2:
+				value = "End";
+				break;
+		}
+
+		string json = JsonConvert.SerializeObject(value);
+		string filePath = Path.Combine(Application.persistentDataPath, "GamePage.json");
+		File.WriteAllText(filePath, json);
+	}
+	public void SignleAi()
+	{
+		string json = JsonConvert.SerializeObject(Single2Ai);
+		string filePath = Path.Combine(Application.persistentDataPath, "SignleAi.json");
+		File.WriteAllText(filePath, json);
+	}
 	#endregion
 	#region Funtions for UI & Button in game
 	public GameObject SettingPanenl;
@@ -417,7 +538,7 @@ public class PlayManagerScript : MonoBehaviour
 		{
 			return false;
 		}
-		if (card.EffectCondition() && card is TrapCard && card.GetAutoTarget()!=null)
+		if (card.EffectCondition() && card is TrapCard && card.GetAutoTarget() != null)
 		{
 			Debug.Log(card.GetAutoTarget().ToString());
 			Debug.Log("list : " + card.name);
@@ -500,7 +621,8 @@ public class PlayManagerScript : MonoBehaviour
 	{
 		card.cardNameUsed1 = true;
 		card.thisCardUsed = true;
-		if (card is TrapCard) {
+		if (card is TrapCard)
+		{
 			int index = card.owner.MagicTrapField.IndexOf(card);
 			card.owner.MagicZone[index].GetComponent<Image>().sprite = card.CardImage;
 			card.iscardfaceup = true;

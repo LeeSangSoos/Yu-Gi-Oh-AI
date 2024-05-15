@@ -7,6 +7,7 @@ public class Card : ScriptableObject
 	private string description;
 	[SerializeField]
 	private Sprite cardimage;
+	public int CardId;
 	public bool iscardfaceup;
 
 	public string Description
@@ -69,6 +70,7 @@ public class Card : ScriptableObject
 		this.originowner = other.originowner;
 		this.cardnum = other.cardnum;
 		this.cardobject = other.cardobject;
+		this.CardId = other.CardId;
 
 		// Copy card effect-related properties
 		this.playManager = other.playManager;

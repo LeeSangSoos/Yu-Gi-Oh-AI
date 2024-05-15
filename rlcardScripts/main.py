@@ -1,57 +1,76 @@
 import numpy as np
 import torch
 from collections import OrderedDict
+import json
+import os
+import time
 
 from rlcard.agents import DQNAgent
 from rlcard.games.custom.utils import cards2list, encode_hand, encode_field, encode_life, encode_page, ACTION_SPACE
 from rlcard.games.custom.player import Player
-
+from rlcard.games.custom.card import Monster
 
 class PlayerWithUnity:
     def __init__(self):
         # load saved agent
-        checkpoint = torch.load('SavedDQNAgent.pth')
+        checkpoint = torch.load('SavedDQNAgent.pth', map_location=torch.device('cpu'))
         self.agent = DQNAgent.from_checkpoint(checkpoint)
 
         self.first_turn = True
         self.page = "Main"
         self.action_recorder = []
         self.is_over = False
+        self.datapath = r"C:\Users\proto\AppData\LocalLow\DefaultCompany\Yu-gi-oh"
+        self.signle2unity = 1
+        self.signleFromUnity = 0
+        np_random_instance = np.random.RandomState(seed=42)
 
-        # TODO get agent ID
-        self.dqnPlayer = Player(0, 0)
+        # get dqnagent player
+        self.dqnPlayer = Player(0, np_random_instance)
+        self.get_player_data(self.dqnPlayer)
 
-        # TODO get player ID
-        self.humanPlayer = Player(0, 0)
-
+        # get human player
+        self.humanPlayer = Player(0, np_random_instance)
+        self.get_player_data(self.humanPlayer)
+        
     def run_game(self):
+        print("run game")
         # Loop until the game ends
         while not self.is_over:
-            # TODO: Get players from unity
-            self.dqnPlayer
-            self.humanPlayer
+            # Wait until unity signle the agent the true
+            while self.signleFromUnity >= self.load_file("SignleAi.json"):
+                time.sleep(1)
+            self.signleFromUnity = self.load_file("SignleAi.json")
+            self.signle2unity += 1
+            
+            # Check if Game is over
+            loaded_data = self.load_file("IsOver.json")
+            value = loaded_data["Value"]
+            self.is_over = value
 
-            # TODO : Get data from unity
-            self.first_turn = True
-            self.page = "Main"
+            # Get players from unity
+            self.get_player_data(self.dqnPlayer)
+            self.get_player_data(self.humanPlayer)
 
-            # TODO : Get human action from unity
-            action = 0
-            self.action_recorder.append((self.humanPlayer.player_id, action))
+            # Get data from unity
+            self.first_turn = self.load_file("isFirstTurn.json")
+            self.page = self.load_file("GamePage.json")
             
             # Get state from players
             extracted_state = self._extract_state(self.get_state(self.dqnPlayer, self.humanPlayer))
 
-            # Run agent and return action
-            action = self.agent.eval_step(extracted_state['obs'])
+            # Run agent and get action
+            action, _ = self.agent.eval_step(extracted_state)
 
-            # Record action of agent
-            self.action_recorder.append((self.dqnPlayer.player_id, action))
+            # Send action to unity
+            self.save_file('DqnAction.json', action)
+            self.save_file('SignleGame.json', self.signle2unity)
+            
 
-            # TODO: Send action to unity
-
-            # TODO: Get is_over from unity
-            self.is_over = False
+            # Get is_over from unity
+            loaded_data = self.load_file("IsOver.json")
+            value = loaded_data["Value"]
+            self.is_over = value
 
     def get_state(self, player, enemy):
         state = {}
@@ -83,13 +102,12 @@ class PlayerWithUnity:
         encode_life(obs[4], state['enemy_life'])
         encode_page(obs[5], state['page'])
         
-        legal_action_id = self._get_legal_actions(self.dqnPlayer, self.humanPlayer)
+        legal_action_id = self._get_legal_actions(state['legal_actions'])
 
         extracted_state = {'obs': obs, 'legal_actions': legal_action_id}
         extracted_state['raw_obs'] = state
         
         extracted_state['raw_legal_actions'] = [a for a in state['legal_actions']]
-        extracted_state['action_record'] = self.action_recorder
         return extracted_state
 
     def get_legal_actions(self, player, opponent):
@@ -103,7 +121,7 @@ class PlayerWithUnity:
                 legal_actions.add("draw")
             else:
                 legal_actions.add("endpage")
-        elif self.page == "Main":
+        elif self.page == "Main" or self.page == "Main1":
             used_places = set()
             for i in range(len(player_monsterfield)):
                 if player_monsterfield[i] is not None:
@@ -146,13 +164,69 @@ class PlayerWithUnity:
             else:
                 legal_actions.add("endpage")
 
-        if self.page == "Main" or self.page == "Battle":
+        if self.page == "Main" or self.page == "Battle" or self.page == "Main1":
             legal_actions.add("endpage")
         
-        legal_actions = list(legal_actions)
-        legal_ids = {ACTION_SPACE[action]: None for action in legal_actions }
-        return OrderedDict(legal_ids)
+        return legal_actions
 
-# Instantiate YourGameClass and run the game
+    def _get_legal_actions(self, legal_actions):
+        ''' Get all leagal actions
+        Returns:
+            OrderedDict (list): return encoded legal action list
+        '''
+        legal_ids = {ACTION_SPACE[action]: None for action in legal_actions}
+        return OrderedDict(legal_ids)
+    
+    def save_file(self, file_name, data):
+        file_path = os.path.join(self.datapath, file_name)
+        with open(file_path, 'w') as f:
+            json.dump(data, f, default=self.convert_to_json_type)
+    
+    def load_file(self, file_name):
+        file_path = os.path.join(self.datapath, file_name)
+        with open(file_path, 'r') as f:
+            loaded_data = json.load(f)
+            return loaded_data
+    
+    def jsonCard2PythonCard(self, player_hand_data:list):
+        playerHand = []
+        for card in player_hand_data:
+            card_info = card.get("Dictionary", {})
+            card_id = card_info.get("cardId")
+            card_name = card_info.get("cardName")
+            card_atk = card_info.get("cardAtk")
+            card_def = card_info.get("cardDef")
+            card_level = card_info.get("cardLevel")
+            monster_card = Monster(card_id, card_name, card_atk, card_def, card_level)
+            playerHand.append(monster_card)
+        return playerHand
+    
+    def get_player_data(self, player):
+        fileName = "HumanPlayer.json"
+        if player == self.dqnPlayer:
+            fileName = "DqnPlayer.json"
+        # read json file
+        loaded_data = self.load_file(fileName).get("Dictionary", {})
+        # get cards info in hand
+        playerHand = self.jsonCard2PythonCard(loaded_data.get("playerHand", {}).get("List", []))
+        playerMonsterField = self.jsonCard2PythonCard(loaded_data.get("playerMonsterField", {}).get("List", []))
+        playerDeck = self.jsonCard2PythonCard(loaded_data.get("playerDeck", {}).get("List", []))
+
+        player.setVariables(
+            loaded_data.get("playerId"), playerHand, 
+            playerMonsterField, loaded_data.get("playerLife"), 
+            loaded_data.get("playerDraw"),loaded_data.get("playerTurnSummon"), 
+            playerDeck
+        )
+    
+    @staticmethod
+    def convert_to_json_type(obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+
 game = PlayerWithUnity()
 game.run_game()

@@ -3,8 +3,8 @@ guid: 423eabe0405c15743b43b25c3d7e9c6c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -459395285836494755
-    second: 90963488_0
+      213: 6730369081351251469
+    second: Nemuriko_0
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 90963488_0
+      name: Nemuriko_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 421
-        height: 614
+        width: 813
+        height: 1185
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,8 +124,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d580a38eb66ef99f0800000000000000
-      internalID: -459395285836494755
+      spriteID: d06a63d3503176d50800000000000000
+      internalID: 6730369081351251469
       vertices: []
       indices: 
       edges: []
@@ -140,8 +140,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      90963488_0: -459395285836494755
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -4,12 +4,12 @@ class Player:
 
     def __init__(self, player_id, np_random):
         self.np_random = np_random
-        self.player_id = player_id
-        self.hand = []
-        self.monsterfield = [None]*5
-        self.life = 8000
+        self.player_id:int = player_id
+        self.hand:list = []
+        self.monsterfield:list = [None]*5
+        self.life:int = 8000
 
-        self.deck = init_deck()
+        self.deck:list = init_deck()
         self.shuffle()
 
         self.turn_draw = 1

@@ -1,24 +1,39 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.XR;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEngine.GraphicsBuffer;
 
 public class AiPlayer : MonoBehaviour
 {
 	public PlayManagerScript playmanager;
 	public Player player;
-	float stepDelay = 0.5f;
+	float stepDelay = 1f;
 	bool step_on_work = false;
+	int signleFromAi = 0;
+	bool gotSignleFromAi = false;
+	string actionString = "";
+	List<string> actionList;
 
 	IEnumerator StepCoroutine()
 	{
 		while (true) // Infinite loop to keep the coroutine running
 		{
 			Step();
-			yield return new WaitForSeconds(stepDelay); // Wait for 0.3 seconds before the next step
+			yield return new WaitForSeconds(stepDelay); // Wait for few seconds before the next step
 		}
 	}
 
+	private void Awake()
+	{
+		LoadActionMapping();
+	}
 	private void Start()
 	{
 		StartCoroutine(StepCoroutine());
@@ -27,183 +42,23 @@ public class AiPlayer : MonoBehaviour
 	void Step()
 	{
 		if (step_on_work) { return; }
-		step_on_work = true;
 		if (player.myturn)
 		{
-			if ((playmanager.GetPage() == Page.Main1 || playmanager.GetPage() == Page.Main2) && playmanager.GetPageTime() == PageTime.OnGoing)
+			step_on_work = true;
+			//Give data to ai & signle
+			if((playmanager.GetPage() == Page.Main1 && playmanager.GetPageTime() == PageTime.OnGoing) || 
+				(playmanager.GetPage() == Page.Battle && playmanager.GetPageTime() == PageTime.OnGoing) || 
+				(playmanager.GetPage() == Page.End && playmanager.GetPageTime() == PageTime.End))
 			{
-				/*Normal summon process
-					 * Check player.turnsummon >= 1
-					 * Check if there is monster in hand that can be summoned
-					 * if there were, summon a choose a random monster to summon from hand
-					 * find place to summon and victoms
-					 * summon
-					 */
-				if (player.turnsummon >= 1)
-				{
-					List<MonsterCard> monsters = new List<MonsterCard>();
-					int CountMonsterOnField = player.MonsterField.Count(card => card != null);
-
-					int PlaceToSummon = -1;
-
-					foreach (Card card in player.Hand)
-					{
-						if (card is MonsterCard)
-						{
-							MonsterCard monsterCard = card as MonsterCard;
-
-							if (monsterCard.level >= 7 && CountMonsterOnField >= 2)
-							{
-								monsters.Add(monsterCard);
-							}
-							else if (monsterCard.level >= 5 && monsterCard.level < 7 && CountMonsterOnField >= 1)
-							{
-								monsters.Add(monsterCard);
-							}
-							else if (monsterCard.level <= 4)
-							{
-								monsters.Add(monsterCard);
-							}
-						}
-					}
-
-					if (monsters.Count() > 0)
-					{
-						int rand = Random.Range(0, monsters.Count());
-						MonsterCard monster = monsters[rand];
-
-						List<int> vics = FindVictom(monster);
-
-						for (int i = 0; i < 5; i++)
-						{
-							if (vics.Contains(i) || player.MonsterField[i] == null)
-							{
-								PlaceToSummon = i; break;
-							}
-						}
-
-						if (PlaceToSummon != -1)
-						{
-							player.PlayerOnWork();
-							rand = Random.Range(0, 10);
-							if (rand < 2)
-							{
-								player.SetMonster(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
-							}
-							else
-								player.NormalSummon(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
-						}
-					}
-				}
-
-				/*Trap set
-				 */
-				for (int i = 0; i < 5; i++)
-				{
-					if (player.MagicTrapField[i] == null)
-					{
-						foreach (Card hand in player.Hand.ToList())
-						{
-							if (hand is TrapCard)
-							{
-								player.SetMagicTrap(hand, i);
-							}
-						}
-					}
-				}
-
-				/*Magic activate
-				 * See set cards.
-				 * if card is available to act activate it
-				 * 
-				
-				for (int i = 0; i < player.MagicTrapField.Count; i++)
-				{
-					MagicCard magiccard;
-					if (!playmanager.IsWorkLeft())
-					{
-						if (player.MagicTrapField[i] is MagicCard)
-						{
-							magiccard = player.MagicTrapField[i] as MagicCard;
-							if (magiccard.EffectCondition())
-							{
-								player.PlayerOnWork();
-								player.MagicTrapEffectOnField(magiccard);
-							}
-						}
-					}
-				}*/
-
-				/*Magic Handactivate
-				 */
-					for (int i = 0; i < player.Hand.Count; i++)
-					{
-						MagicCard magiccard;
-						if (player.Hand[i] is MagicCard)
-						{
-							magiccard = player.Hand[i] as MagicCard;
-							if (magiccard.EffectCondition())
-							{
-
-								for (int j = 0; j < 5; j++)
-								{
-									if (player.MagicTrapField[j] == null)
-									{
-										if (!playmanager.SomeoneWorking() && !playmanager.ChainOnProcess)
-										{
-											Debug.Log("chain process? 2 : " + playmanager.ChainOnProcess);
-											Debug.Log("Effect act : " + magiccard);
-											player.MagicTrapEffectFromHand(magiccard, j);
-											break;
-										}
-									}
-								}
-							}
-						}
-					}
+				SignleAi();
+				//Wait for action
+				WaitForSignleFromAi();
 			}
-			else if (playmanager.GetPage() == Page.Battle)
+			else
 			{
-
-				if (player.MonsterField.Any(monsterCard => monsterCard != null))
-				{
-					for (int m = 0; m < player.MonsterField.Count; m++)
-					{
-						MonsterCard monsterCard = player.MonsterField[m] as MonsterCard;
-						if (monsterCard != null)
-						{
-							if (monsterCard.attackchance >= 1 && monsterCard.iscardfaceup)
-							{
-								int target = -1;
-								for (int i = 0; i < 5; i++)
-								{
-									if (player.enemy.MonsterField[i] != null)
-									{
-										MonsterCard enemy = player.enemy.MonsterField[i] as MonsterCard;
-										target = i;
-										Debug.Log("Ai Attacked");
-										break;
-									}
-								}
-
-								if (target != -1)
-									player.Attack(monsterCard, target);
-								else
-									player.DirectAttack(monsterCard);
-							}
-						}
-					}
-				}
+				//Call Next Page
+				Ai_NextPage();
 			}
-
-			//DisCard Hand at end
-			if (playmanager.GetPage() == Page.End && player.discardhand)
-			{
-				Card card = player.Hand[0];
-				player.DiscardHand(card);
-			}
-			//Call Next Page
-			Ai_NextPage();
 		}
 
 		step_on_work = false;
@@ -213,42 +68,17 @@ public class AiPlayer : MonoBehaviour
 	{
 		if (player.myturn)
 		{
-			if (player.WorkLeft) player.NoWorkLeft();
-
-			player.ToPageEnd();
-		}
-	}
-
-	List<int> FindVictom(MonsterCard monster)
-	{
-		List<int> list = new List<int> { -1, -1 };
-		List<int> monslist = new List<int>();
-
-		for (int i = 0; i < 5; i++)
-		{
-			if (player.MonsterField[i] != null)
+			if(playmanager.GetPage() == Page.End && playmanager.GetPageTime() == PageTime.End && player.Hand.Count > 6)
 			{
-				monslist.Add(i);
+				
+			}
+			else
+			{
+				if (player.WorkLeft) player.NoWorkLeft();
+
+				player.ToPageEnd();
 			}
 		}
-
-		if (monster.level >= 7)
-		{
-			if (monslist.Count < 2) { return list; }
-			int rand = Random.Range(0, monslist.Count);
-			list[0] = (rand);
-			monslist.RemoveAt(rand);
-			rand = Random.Range(0, monslist.Count);
-			list[1] = (rand);
-		}
-		else if (monster.level >= 5)
-		{
-			if (monslist.Count < 1) { return list; }
-			int rand = Random.Range(0, monslist.Count);
-			list[0] = (rand);
-		}
-
-		return list;
 	}
 
 	public void SeeCardsToActivate(List<Card> cards, Card target)
@@ -276,27 +106,140 @@ public class AiPlayer : MonoBehaviour
 		return target;
 	}
 
-	/*
-	public bool CheckTarget(Card card, Card target)
+	public void SignleAi()
 	{
-		if (card.Needtargetpos == CardPosition.MonsterField)
-		{
-			if (target.pos != CardPosition.MonsterField)
-			{
-				return false;
-			}
-		}
-		if (card.Needtargetowner == TargetOwner.Mine)
-		{
+		playmanager.SavePlayer(player.enemy, "HumanPlayer.json");
+		playmanager.SavePlayer(player, "DqnPlayer.json");
+		playmanager.SignleAi();
+	}
 
-		}
-		if (card.Needtargettype == TargetType.Monster)
+	void WaitForSignleFromAi()
+	{
+		while (true)
 		{
-			if (target is not MonsterCard)
+			string filePath = Path.Combine(Application.persistentDataPath, "SignleGame.json");
+			if (File.Exists(filePath))
 			{
-				return false;
+				string json = File.ReadAllText(filePath);
+				int signle2unity = JsonConvert.DeserializeObject<int>(json);
+
+				if (signleFromAi < signle2unity)
+				{
+					signleFromAi = signle2unity;
+					playmanager.Single2Ai++; 
+					break;
+				}
+			}
+			System.Threading.Thread.Sleep(1000);
+		}
+		DoAction();
+	}
+
+	public void DoAction()
+	{
+		DecodeAction();
+		string[] actionValues = actionString.Split('-');
+		if (actionValues[0] == "endpage")
+		{
+			Ai_NextPage();
+		}
+		else if (actionValues[0] == "summon")
+		{
+			int PlaceToSummon = -1;
+			int[] vics = new int[2];
+			MonsterCard monster = player.Hand[int.Parse(actionValues[2])] as MonsterCard;
+			if (actionValues[1] == "0")
+			{
+				PlaceToSummon = GetPlaceToSummon(vics);
+				if(actionValues[3] == "faceup")
+					player.NormalSummon(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
+				else
+				{
+					player.SetMonster(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
+				}
+			}
+			else if (actionValues[1] == "1")
+			{
+				vics[0] = int.Parse(actionValues[3]);
+				PlaceToSummon = GetPlaceToSummon(vics);
+				if (actionValues[4] == "faceup")
+					player.NormalSummon(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
+				else
+				{
+					player.SetMonster(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
+				}
+			}
+			else if (actionValues[1] == "2")
+			{
+				vics[0] = int.Parse(actionValues[3]);
+				vics[1] = int.Parse(actionValues[4]);
+				PlaceToSummon = GetPlaceToSummon(vics);
+				if (actionValues[5] == "faceup")
+					player.NormalSummon(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
+				else
+				{
+					player.SetMonster(monster, PlaceToSummon, monster.level, vics[0], vics[1]);
+				}
 			}
 		}
-		return true;
-	}*/
+		else if (actionValues[0] == "attack")
+		{
+			MonsterCard monsterCard = player.Hand[int.Parse(actionValues[1])] as MonsterCard;
+			int target = int.Parse(actionValues[2]);
+			if (actionValues[2] == "direct")
+			{
+				player.DirectAttack(monsterCard);
+			}
+			else
+			{
+				player.Attack(monsterCard, target);
+			}
+		}
+		else if (actionValues[0] == "discard")
+		{
+			player.DiscardHand(player.Hand[int.Parse(actionValues[1])]);
+		}
+	}
+
+	void DecodeAction()
+	{
+		//decode action
+		string filePath = Path.Combine(Application.persistentDataPath, "DqnAction.json");
+		if (File.Exists(filePath))
+		{
+			string json = File.ReadAllText(filePath);
+			int action = JsonConvert.DeserializeObject<int>(json);
+
+			actionString = actionList[action];
+		}
+	}
+
+	void LoadActionMapping()
+	{
+		string filePath = Path.Combine(Application.persistentDataPath, "action_space.json");
+		if (File.Exists(filePath))
+		{
+			string json = File.ReadAllText(filePath);
+			Dictionary<string, int> actionMapping = JsonConvert.DeserializeObject<Dictionary<string, int>>(json);
+
+			actionList = new List<string>(new string[actionMapping.Count]);
+			foreach (var pair in actionMapping)
+			{
+				actionList[pair.Value] = pair.Key;
+			}
+		}
+	}
+
+	int GetPlaceToSummon(int[] vics)
+	{
+		int PlaceToSummon = -1;
+		for (int i = 0; i < 5; i++)
+		{
+			if (vics.Contains(i) || player.MonsterField[i] == null)
+			{
+				PlaceToSummon = i; break;
+			}
+		}
+		return PlaceToSummon;
+	}
 }

@@ -7,24 +7,16 @@
       "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playscene\\aiplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|c:\\users\\proto\\desktop\\yugi_ai\\yu-gi-oh-ai\\yu-gi-oh\\assets\\scripts\\playscene\\playmanagerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playscene\\playmanagerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|c:\\users\\proto\\desktop\\yugi_ai\\yu-gi-oh-ai\\yu-gi-oh\\assets\\scripts\\scriptableobj\\card.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scriptableobj\\card.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|c:\\users\\proto\\desktop\\yugi_ai\\yu-gi-oh-ai\\yu-gi-oh\\assets\\scripts\\scriptableobj\\cardclasses\\trapcards\\traphole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scriptableobj\\cardclasses\\trapcards\\traphole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\assets\\scripts\\playscene\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playscene\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\assets\\scripts\\scriptableobj\\cardclasses\\magiccards\\violetcrystal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scriptableobj\\cardclasses\\magiccards\\violetcrystal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\assets\\scripts\\playscene\\playmanagerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\playscene\\playmanagerscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\assets\\scripts\\a_others\\utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{72245F55-84AB-1FCF-DEE3-0611AC8C03D4}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\a_others\\utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,45 +26,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "TrapHole.cs",
-              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\ScriptableObj\\CardClasses\\TrapCards\\TrapHole.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\ScriptableObj\\CardClasses\\TrapCards\\TrapHole.cs",
-              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\ScriptableObj\\CardClasses\\TrapCards\\TrapHole.cs",
-              "RelativeToolTip": "Assets\\Scripts\\ScriptableObj\\CardClasses\\TrapCards\\TrapHole.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "Utils.cs",
+              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\A_Others\\Utils.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\A_Others\\Utils.cs",
+              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\A_Others\\Utils.cs",
+              "RelativeToolTip": "Assets\\Scripts\\A_Others\\Utils.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-01T02:06:46.268Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-15T14:21:57.317Z",
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "PlayManagerScript.cs",
-              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
-              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
-              "RelativeToolTip": "Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
-              "ViewState": "AQIAAPEAAAAAAAAAAAAowDUAAAALAAAA",
+              "Title": "Player.cs",
+              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\Player.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayScene\\Player.cs",
+              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\Player.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PlayScene\\Player.cs",
+              "ViewState": "AQIAAFEBAAAAAAAAAAAswGMBAAAcAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-01T02:06:23.535Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Card.cs",
-              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\ScriptableObj\\Card.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\ScriptableObj\\Card.cs",
-              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\ScriptableObj\\Card.cs",
-              "RelativeToolTip": "Assets\\Scripts\\ScriptableObj\\Card.cs",
-              "ViewState": "AQIAAGEAAAAAAAAAAAAYwHcAAAACAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-01T02:04:49.95Z",
+              "WhenOpened": "2024-05-15T20:15:47.755Z",
               "EditorCaption": ""
             },
             {
@@ -83,35 +62,23 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\PlayScene\\AiPlayer.cs",
               "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\AiPlayer.cs",
               "RelativeToolTip": "Assets\\Scripts\\PlayScene\\AiPlayer.cs",
-              "ViewState": "AQIAAFcAAAAAAAAAAAAuwBQBAAACAAAA",
+              "ViewState": "AQIAAIIAAAAAAAAAAAAiwIQAAAAlAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2023-11-03T00:04:07.757Z",
+              "WhenOpened": "2024-05-15T17:54:48.089Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Player.cs",
-              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\Player.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayScene\\Player.cs",
-              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\Player.cs",
-              "RelativeToolTip": "Assets\\Scripts\\PlayScene\\Player.cs",
-              "ViewState": "AQIAAOMAAAAAAAAAAAAswDQAAAAAAAAA",
+              "DocumentIndex": 2,
+              "Title": "PlayManagerScript.cs",
+              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
+              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PlayScene\\PlayManagerScript.cs",
+              "ViewState": "AQIAABYAAAAAAAAAAAAAACYAAAASAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2023-11-03T00:02:04.053Z",
+              "WhenOpened": "2024-05-15T10:40:31.022Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "VioletCrystal.cs",
-              "DocumentMoniker": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\ScriptableObj\\CardClasses\\MagicCards\\VioletCrystal.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\ScriptableObj\\CardClasses\\MagicCards\\VioletCrystal.cs",
-              "ToolTip": "C:\\Users\\proto\\Desktop\\Yugi_AI\\Yu-Gi-Oh-AI\\Yu-gi-oh\\Assets\\Scripts\\ScriptableObj\\CardClasses\\MagicCards\\VioletCrystal.cs",
-              "RelativeToolTip": "Assets\\Scripts\\ScriptableObj\\CardClasses\\MagicCards\\VioletCrystal.cs",
-              "ViewState": "AQIAADUAAAAAAAAAAAAYwD4AAAACAAAA",
-              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALNSURBVDhP7VNdSFNhGH7POds8znNy080/BIXldAbJcEkXiaChXRRCCIGK6E1CV/lDeZHl8EowxYtAIgxC7CIvRIe48kLDC5Vz41EmbhpDS51uudOmubNztr7vuILqoiDoyufie3nP9/B8z/tz4Bz/DCoRYc23xlTdqUpXl6rZ6NUoa6g0sJabFrasrkzjmnJ9xZxgMKhnKhi9\u002B6JbI8wJkc7OTuN28fYF\u002BbIMh/OHIuaQ\u002BMAQT8RWJM9JGolTkSpOikkcQRKcilINJigggzyI72gVPRgOhw2RWGRGDWouQkVaExQg8MF7\u002BW7nprNxZXfFTFM0FGcWA5PEABKFiBRxtJS2NGGxoYWhG/Nb85neI68PifLWXGu559BDH50cuUmCHN18vNmrOFz8uHjFG/Ca4/E41JhrwiU5JU\u002BtOVZ7gaHAnsVkvU5NTY3G4rHVbDZbMDJGIAhC0Gq0fJGxKMomsdjWLpLZwloK6l7UTda/rI/bHXZfKBR6hXqVlrj6CYEvgcm\u002Bt31xU69p6iB8kB0QAp\u002BaR5tx3pOgnPVww78BGpUGdFrdMsuyTTqd7rNymwByTqKHMvxhP30sHqMPQA8vDGf4Qj5KlEVkkGByn\u002BQqJhRBSZZwANRwJf6K7wMYeD9QPs6PQzQWvTayOOJsGGswcDscyDH5Lh4U5iqC\u002Bfp8OJVOgd/ncfobUlJSBOTqYe2lWr7CVIEfXjUbzQ\u002B6KruEQmMhoIE4UF\u002BfYa5iqbqoGlz7LnAfuM1tb9p6cM5oGEAlwl5oz02S5BiivQsEAwa0CYUkkG7nPeekP\u002Bg3Tq9Ps6jmOc8jzzLWUtZm6cNS94xrphEttzlNmwaWDAskq5NxaSBKoqP9evstzPsbKIIYs\u002BuzHWh1OiZWJ2BH2AGKpMCUboI8fd5s/\u002B3\u002BpgTtj/jxp9BAP0fBRkqkDfXEhiZro\u002BKUTY7K988Y5/g/APgG2Ocp0eSbumcAAAAASUVORK5CYII=",
-              "WhenOpened": "2023-11-02T23:58:17.033Z"
             }
           ]
         }
