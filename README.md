@@ -99,7 +99,7 @@ The AI uses an epsilon-greedy algorithm for action selection, with rewards recor
 The MLP consists of two hidden layers with 512 neurons each. Epochs depend on the number of learning episodes and training frequency. The ADAM algorithm updates weights.
 
 #### Training Results
-![Training Results](https://github.com/LeeSangSoos/Yu-Gi-Oh-AI/assets/105085706/2d01878e-9e17-46b5-a9ad-d7c300776e02)
+![image](https://github.com/LeeSangSoos/Yu-Gi-Oh-AI/assets/105085706/7e2624f0-4e68-43cf-9a38-cdeb89687eeb)
 
 ---
 
