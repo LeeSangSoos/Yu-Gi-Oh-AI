@@ -56,7 +56,7 @@ The AI is built using the RLCard platform.
 
 ![AI Environment](https://github.com/LeeSangSoos/Yu-Gi-Oh-AI/assets/105085706/9dbdf6bf-f94d-487e-8049-dd3fc38b37e7)
 
-RLCard Platform
+#### RLCard Platform
 The RLCard platform is an open-source toolkit for developing reinforcement learning (RL) environments for card games. It provides various environments and tools to facilitate the development and evaluation of RL algorithms. By using RLCard, this project leverages a robust and flexible framework to implement the complex rules and interactions of Yu-Gi-Oh.
 
 Key features of RLCard include:
