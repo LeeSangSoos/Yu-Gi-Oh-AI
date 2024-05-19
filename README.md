@@ -66,6 +66,8 @@ Standardization: Provides standardized interfaces for defining game states, acti
 Pre-built Environments: Includes several pre-built card game environments, which can serve as references or starting points for custom game implementations.
 Using RLCard allowed for efficient implementation and testing of the Yu-Gi-Oh AI, ensuring a high level of compatibility with existing RL techniques and tools.
 
+RL card site link : https://rlcard.org/index.html
+
 #### Yu-Gi-Oh Environment Information
 - **Number of Actions**: 473
 - **Number of Players**: 2
